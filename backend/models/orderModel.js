@@ -7,6 +7,9 @@ const orderSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    paymentIntentId: {
+      type: String,
+    },
     orderItems: [
       {
         name: { type: String, required: true },
@@ -75,8 +78,12 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
+
+orderSchema.methods.getTotalCents = function () {
+  return Math.floor(this.totalPrice * 100);
+};
 
 const Order = mongoose.model("Order", orderSchema);
 

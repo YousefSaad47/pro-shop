@@ -1,6 +1,6 @@
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -8,21 +8,21 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { CheckCircle, XCircle, AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
+} from '@/components/ui/table';
+import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Link } from 'react-router-dom';
 
 const OrderListPage = () => {
-  const {
+  let {
     isLoading,
     error,
     data: orders,
   } = useQuery({
-    queryKey: ["orders"],
+    queryKey: ['orders'],
     queryFn: async () => {
-      const { data } = await axios.get("/api/orders");
+      const { data } = await axios.get('/api/orders');
       return data;
     },
   });
@@ -31,7 +31,7 @@ const OrderListPage = () => {
     <Table>
       <TableHeader>
         <TableRow>
-          {["ID", "USER", "DATE", "TOTAL", "PAID", "DELIVERED"].map(
+          {['ID', 'USER', 'DATE', 'TOTAL', 'PAID', 'DELIVERED'].map(
             (header) => (
               <TableHead key={header}>
                 <Skeleton className="h-4 w-20" />
@@ -94,38 +94,41 @@ const OrderListPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order._id} className="hover:bg-gray-50">
-                <TableCell className="font-medium">{order._id}</TableCell>
-                <TableCell>{order.user.name}</TableCell>
-                <TableCell>
-                  {new Date(order.createdAt).toLocaleDateString()}
-                </TableCell>
-                <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
-                <TableCell>
-                  {order.isPaid ? (
-                    <CheckCircle className="text-green-500 h-5 w-5" />
-                  ) : (
-                    <XCircle className="text-red-500 h-5 w-5" />
-                  )}
-                </TableCell>
-                <TableCell>
-                  {order.isDelivered ? (
-                    <CheckCircle className="text-green-500 h-5 w-5" />
-                  ) : (
-                    <XCircle className="text-red-500 h-5 w-5" />
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Link
-                    to={`/orders/${order._id}`}
-                    className="text-blue-500 hover:underline"
-                  >
-                    Details
-                  </Link>
-                </TableCell>
-              </TableRow>
-            ))}
+            {orders
+              .slice()
+              .reverse()
+              .map((order) => (
+                <TableRow key={order._id} className="hover:bg-gray-50">
+                  <TableCell className="font-medium">{order._id}</TableCell>
+                  <TableCell>{order.user.name}</TableCell>
+                  <TableCell>
+                    {new Date(order.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
+                  <TableCell>
+                    {order.isPaid ? (
+                      <CheckCircle className="text-green-500 h-5 w-5" />
+                    ) : (
+                      <XCircle className="text-red-500 h-5 w-5" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {order.isDelivered ? (
+                      <CheckCircle className="text-green-500 h-5 w-5" />
+                    ) : (
+                      <XCircle className="text-red-500 h-5 w-5" />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Link
+                      to={`/orders/${order._id}`}
+                      className="text-blue-500 hover:underline"
+                    >
+                      Details
+                    </Link>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </div>

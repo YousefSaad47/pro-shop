@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -21,10 +22,68 @@ import {
 import { motion } from "framer-motion";
 import { FaSpinner, FaExclamationTriangle } from "react-icons/fa";
 import { useSelector } from "react-redux";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { toast } from "react-toastify";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+} from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(
+  "pk_test_51Q5qtpEAnvAOEf8E7Udi625h2tNVMeUM6dvV2RNb2XZ7pZQ990rJexYN8OTefbtrhb1BhqYJ02GYzdi0izusWFZM00oQkEulaJ",
+);
+
+const CheckoutForm = ({ onSuccess }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+
+    setIsProcessing(true);
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+    });
+
+    if (error) {
+      toast.error(error.message);
+    } else if (paymentIntent.status === "succeeded") {
+      onSuccess();
+    }
+
+    setIsProcessing(false);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <PaymentElement />
+      <Button
+        className="w-full mt-4 text-white"
+        disabled={!stripe || isProcessing}
+      >
+        {isProcessing ? (
+          <span className="flex items-center">
+            <FaSpinner className="animate-spin mr-2" />
+            Processing...
+          </span>
+        ) : (
+          "Pay Now"
+        )}
+      </Button>
+    </form>
+  );
+};
 
 const statusStyles = {
   delivered: {
@@ -40,6 +99,7 @@ const statusStyles = {
 const OrderPage = () => {
   const { id: orderId } = useParams();
   const { userInfo } = useSelector((state) => state.auth);
+  const [clientSecret, setClientSecret] = useState("");
 
   const {
     data: order,
@@ -51,21 +111,6 @@ const OrderPage = () => {
     queryFn: async () => {
       const { data } = await axios.get(`/api/orders/${orderId}`);
       return data;
-    },
-  });
-
-  const { mutate: payOrder, isLoading: isPayLoading } = useMutation({
-    mutationKey: ["payOrder"],
-    mutationFn: async ({ orderId, details }) => {
-      const { data } = await axios.put(`/api/orders/${orderId}/pay`, details);
-      return data;
-    },
-    onSuccess: () => {
-      refetch();
-      toast.success("Payment successful! Your order has been paid.");
-    },
-    onError: (error) => {
-      toast.error(error?.response?.data?.message || error.message);
     },
   });
 
@@ -84,57 +129,27 @@ const OrderPage = () => {
     },
   });
 
-  const {
-    data: paypal,
-    isLoading: isPaypalLoading,
-    isError: isPaypalError,
-  } = useQuery({
-    queryKey: ["paypal"],
-    queryFn: async () => {
-      const { data } = await axios.get("/api/config/paypal");
-      return data;
-    },
-  });
-
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    if (!isPaypalLoading && !isPaypalError && paypal?.clientId) {
-      paypalDispatch({
-        type: "resetOptions",
-        value: {
-          "client-id": paypal.clientId,
-          currency: "USD",
-        },
-      });
-      paypalDispatch({ type: "setLoadingStatus", value: "pending" });
+    if (order && !order.isPaid) {
+      const createPaymentIntent = async () => {
+        try {
+          const { data } = await axios.put(`/api/orders/${orderId}/pay`);
+          setClientSecret(data.clientSecret);
+        } catch (err) {
+          toast.error("Failed to initialize payment. Please try again.");
+        }
+      };
+      createPaymentIntent();
     }
-  }, [paypal, paypalDispatch, isPaypalLoading, isPaypalError]);
+  }, [order, orderId]);
 
-  const onApprove = async (data, actions) => {
-    return actions.order.capture().then(async function (details) {
-      await payOrder({ orderId, details });
-    });
-  };
-
-  const createOrder = (data, actions) => {
-    return actions.order.create({
-      purchase_units: [
-        {
-          amount: {
-            value: order.totalPrice.toFixed(2),
-          },
-        },
-      ],
-    });
-  };
-
-  const onError = (err) => {
-    toast.error("PayPal payment failed. Please try again or contact support.");
+  const handlePaymentSuccess = async () => {
+    await refetch();
+    toast.success("Payment successful! Your order has been paid.");
   };
 
   if (isLoading) {
@@ -168,6 +183,13 @@ const OrderPage = () => {
     );
   }
 
+  const stripeOptions = {
+    clientSecret,
+    appearance: {
+      theme: "stripe",
+    },
+  };
+
   return (
     <motion.div
       className="container mx-auto px-4 py-8 max-w-6xl bg-gray-50 text-gray-800"
@@ -196,7 +218,9 @@ const OrderPage = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left column - Order details */}
         <div className="lg:col-span-2 space-y-8">
+          {/* Shipping Information Card */}
           <Card className="bg-white shadow-sm">
             <CardHeader className="border-b border-gray-100">
               <CardTitle className="flex items-center text-xl text-gray-800">
@@ -227,6 +251,7 @@ const OrderPage = () => {
             </CardContent>
           </Card>
 
+          {/* Payment Details Card */}
           <Card className="bg-white shadow-sm">
             <CardHeader className="border-b border-gray-100">
               <CardTitle className="flex items-center text-xl text-gray-800">
@@ -236,7 +261,7 @@ const OrderPage = () => {
             <CardContent className="space-y-4 p-6">
               <div className="flex justify-between items-center">
                 <p className="text-gray-600">Method:</p>
-                <p className="font-medium">{order.paymentMethod}</p>
+                <p className="font-medium">Stripe</p>
               </div>
               <Separator className="bg-gray-100" />
               <div className="flex justify-between items-center">
@@ -252,6 +277,7 @@ const OrderPage = () => {
             </CardContent>
           </Card>
 
+          {/* Order Items Card */}
           <Card className="bg-white shadow-sm">
             <CardHeader className="border-b border-gray-100">
               <CardTitle className="flex items-center text-xl text-gray-800">
@@ -302,6 +328,7 @@ const OrderPage = () => {
           </Card>
         </div>
 
+        {/* Right column - Order summary and payment */}
         <div className="lg:col-span-1 space-y-6">
           <Card className="bg-white shadow-sm sticky top-8">
             <CardHeader className="border-b border-gray-100">
@@ -332,49 +359,31 @@ const OrderPage = () => {
                 </div>
               </div>
 
-              {!order.isPaid && (
+              {!order.isPaid && clientSecret && (
                 <motion.div
                   className="mt-6"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5 }}
                 >
-                  {isPending ? (
-                    <div className="flex justify-center items-center p-4 bg-gray-100 rounded-lg">
-                      <FaSpinner className="animate-spin text-3xl text-gray-400 mr-3" />
-                      <span className="text-lg font-medium text-gray-600">
-                        Loading PayPal...
-                      </span>
-                    </div>
-                  ) : (
-                    <Card className="border border-gray-200">
-                      <CardHeader>
-                        <CardTitle className="text-lg text-center text-gray-800">
-                          Pay with PayPal
-                        </CardTitle>
-                        <CardDescription className="text-center text-gray-500">
-                          Safe and secure payment powered by PayPal
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <PayPalButtons
-                          className="select-none"
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                          style={{ layout: "vertical", shape: "rect" }}
+                  <Card className="border border-gray-200">
+                    <CardHeader>
+                      <CardTitle className="text-lg text-center text-gray-800">
+                        Pay with Stripe
+                      </CardTitle>
+                      <CardDescription className="text-center text-gray-500">
+                        Safe and secure payment
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Elements stripe={stripePromise} options={stripeOptions}>
+                        <CheckoutForm
+                          orderId={orderId}
+                          onSuccess={handlePaymentSuccess}
                         />
-                      </CardContent>
-                    </Card>
-                  )}
-                  {isPayLoading && (
-                    <div className="flex justify-center items-center mt-4 p-4 bg-gray-100 rounded-lg">
-                      <FaSpinner className="animate-spin text-2xl text-gray-400 mr-2" />
-                      <span className="text-gray-600 font-medium">
-                        Processing payment...
-                      </span>
-                    </div>
-                  )}
+                      </Elements>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               )}
 
