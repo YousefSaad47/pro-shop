@@ -1,6 +1,6 @@
-import React from "react";
-import { Facebook, Twitter, Instagram } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,25 +20,28 @@ const Footer = () => {
               <li>
                 <Link
                   to="/"
-                  className="hover:text-white transition duration-300 border-b-2 border-transparent hover:border-white pb-1"
+                  className="relative hover:text-white transition duration-300 pb-1 group"
                 >
                   Home
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/"
-                  className="hover:text-white transition duration-300 border-b-2 border-transparent hover:border-white pb-1"
+                  className="relative hover:text-white transition duration-300 pb-1 group"
                 >
                   Products
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
               <li>
                 <Link
                   to="/shipping"
-                  className="hover:text-white transition duration-300 border-b-2 border-transparent hover:border-white pb-1"
+                  className="relative hover:text-white transition duration-300 pb-1 group"
                 >
                   Shipping
+                  <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full"></span>
                 </Link>
               </li>
             </ul>

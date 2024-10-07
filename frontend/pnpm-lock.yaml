@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@paypal/react-paypal-js':
-        specifier: ^8.7.0
-        version: 8.7.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@radix-ui/react-accordion':
         specifier: ^1.2.0
         version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.5)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -485,18 +482,6 @@ packages:
   '@nodelib/fs.walk@1.2.8':
     resolution: {integrity: sha512-oGB+UxlgWcgQkgwo8GcEGwemoTFt3FIO9ababBmaGwXIoBKZ+GTy0pP185beGg7Llih/NSHSV2XAs1lnznocSg==}
     engines: {node: '>= 8'}
-
-  '@paypal/paypal-js@8.1.2':
-    resolution: {integrity: sha512-EKshGSWRxLWU1NyPB9P1TiOkPajVmpTo5I9HuZKoSv8y2uk0XIskXqMkAJ/Y9qAg9iJyP102Jb/atX63tTy24w==}
-
-  '@paypal/react-paypal-js@8.7.0':
-    resolution: {integrity: sha512-KW4EdL8hlLWBY6f9l1csxQ8Szh5bhMFLxl+DV29jHNwdlM6z3s+w4LZQ7GtgHktSrlNBHgblNNvwLNpcDtsZgg==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-
-  '@paypal/sdk-constants@1.0.149':
-    resolution: {integrity: sha512-oHdaRg2fP9LINMDJ8fMTtRvvW2QJVifoEoq7YPOP5Sk50edWX6tyATZTfgSnJmLHHq3OE6OF1aKa7hz09frVxw==}
 
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -1665,9 +1650,6 @@ packages:
     resolution: {integrity: sha512-0hJU9SCPvmMzIBdZFqNPXWa6dqh7WdH0cII9y+CyS8rG3nL48Bclra9HmKhVVUHyPWNH5Y7xDwAB7bfgSjkUMQ==}
     engines: {node: '>= 0.4'}
 
-  hi-base32@0.5.1:
-    resolution: {integrity: sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==}
-
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
     engines: {node: '>= 4'}
@@ -2066,9 +2048,6 @@ packages:
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
-
-  promise-polyfill@8.3.0:
-    resolution: {integrity: sha512-H5oELycFml5yto/atYqmjyigJoAo3+OXwolYiH7OfQuYlAqhxNvTfiNMbV9hsC6Yp83yE5r2KTVmtrG6R9i6Pg==}
 
   prop-types@15.8.1:
     resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
@@ -2794,21 +2773,6 @@ snapshots:
     dependencies:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.17.1
-
-  '@paypal/paypal-js@8.1.2':
-    dependencies:
-      promise-polyfill: 8.3.0
-
-  '@paypal/react-paypal-js@8.7.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
-    dependencies:
-      '@paypal/paypal-js': 8.1.2
-      '@paypal/sdk-constants': 1.0.149
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
-  '@paypal/sdk-constants@1.0.149':
-    dependencies:
-      hi-base32: 0.5.1
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
@@ -4093,8 +4057,6 @@ snapshots:
     dependencies:
       function-bind: 1.1.2
 
-  hi-base32@0.5.1: {}
-
   ignore@5.3.2: {}
 
   immer@10.1.1: {}
@@ -4449,8 +4411,6 @@ snapshots:
       source-map-js: 1.2.0
 
   prelude-ls@1.2.1: {}
-
-  promise-polyfill@8.3.0: {}
 
   prop-types@15.8.1:
     dependencies:

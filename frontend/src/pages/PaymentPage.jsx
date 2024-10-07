@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import FormContainer from "@/components/FormContainer";
-import CheckoutSteps from "@/components/CheckoutSteps";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { CreditCard } from "lucide-react";
-import { BiLogoPaypal } from "react-icons/bi";
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import FormContainer from '@/components/FormContainer';
+import CheckoutSteps from '@/components/CheckoutSteps';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
+import { CreditCard } from 'lucide-react';
 
 const PaymentPage = () => {
   const navigate = useNavigate();
 
   const handleContinue = () => {
-    navigate("/placeorder");
+    navigate('/placeorder');
   };
 
   useEffect(() => {
@@ -41,13 +40,9 @@ const PaymentPage = () => {
       >
         <h1 className="text-3xl font-bold text-center mb-6">Payment Methods</h1>
         <p className="text-center text-gray-600 mb-6">
-          The following payment methods will be available on the next page:
+          The following payment method will be available on the next page:
         </p>
         <div className="space-y-4 mb-8">
-          <PaymentMethod
-            icon={<BiLogoPaypal className="w-6 h-6 text-blue-500" />}
-            label="PayPal"
-          />
           <PaymentMethod
             icon={<CreditCard className="w-6 h-6 text-gray-600" />}
             label="Credit Card"

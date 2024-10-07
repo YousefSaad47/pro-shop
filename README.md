@@ -1,6 +1,8 @@
-# ProShop eCommerce Platform
+# Pro-Shop E-Commerce Platform
 
-> eCommerce platform built with the MERN stack
+> E-Commerce platform built with the MERN stack
+
+# Demo
 
 https://github.com/user-attachments/assets/efd06cd6-3185-49d8-964c-202b9826810a
 
@@ -49,18 +51,21 @@ https://github.com/user-attachments/assets/efd06cd6-3185-49d8-964c-202b9826810a
 ## Usage
 
 - Create a MongoDB database and obtain your `MongoDB URI` - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
-- Create a PayPal account and obtain your `Client ID` - [PayPal Developer](https://developer.paypal.com/)
+- Create a Stripe account and obtain your `Secret Key` - [Stripe Developer](https://stripe.com/)
 
 ### Env Variables
 
 Rename the `.env.example` file to `.env` and add the following
 
 ```
-NODE_ENV = development
-PORT = 5000
-MONGO_URI = your mongodb uri
-JWT_SECRET = 'abc123'
-PAYPAL_CLIENT_ID = your paypal client id
+NOVE_END=development
+PORT=5000
+MONGO_CONNECTION=<your_mongo_connection>
+JWT_SECRET=<your_jwt_secret>
+STRIPE_SECRET_KEY=<your_stripe_secret>
+STRIPE_PUBLISHABLE_KEY=<your_stripe_publishable_key>
+STRIPE_WEBHOOK_SECRET=<your_stripe_webhook_secret>
+
 ```
 
 Change the JWT_SECRET and PAGINATION_LIMIT to what you want
@@ -103,5 +108,8 @@ admin@email.com (Admin)
 123456
 
 yousef@email.com (Customer)
-12345
+123456
+
+mohamed@email.com (Customer)
+123456
 ```

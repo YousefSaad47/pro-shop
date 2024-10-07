@@ -1,19 +1,17 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Button } from "@/components/ui/button";
-import { Star } from "lucide-react";
+} from '@/components/ui/carousel';
+import { Button } from '@/components/ui/button';
+import { Star } from 'lucide-react';
 
 const FeaturedSection = ({ products }) => {
   const navigate = useNavigate();
-
-  console.log(products);
 
   return (
     <section className="mb-32">

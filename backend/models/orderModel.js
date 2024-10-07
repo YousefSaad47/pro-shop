@@ -1,11 +1,11 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const orderSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User",
+      ref: 'User',
     },
     paymentIntentId: {
       type: String,
@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema(
         product: {
           type: mongoose.Schema.Types.ObjectId,
           required: true,
-          ref: "Product",
+          ref: 'Product',
         },
       },
     ],
@@ -59,10 +59,11 @@ const orderSchema = new mongoose.Schema(
       required: true,
       default: 0.0,
     },
-    isPaid: {
-      type: Boolean,
+    status: {
+      type: String,
+      enum: ['created', 'processing', 'paid'],
+      default: 'created',
       required: true,
-      default: false,
     },
     paidAt: {
       type: Date,
@@ -78,13 +79,13 @@ const orderSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 orderSchema.methods.getTotalCents = function () {
   return Math.floor(this.totalPrice * 100);
 };
 
-const Order = mongoose.model("Order", orderSchema);
+const Order = mongoose.model('Order', orderSchema);
 
 export default Order;

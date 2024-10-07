@@ -13,11 +13,11 @@ import paymentRoutes from './routes/paymentRoute.js';
 dotenv.config();
 connectDB();
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 
 const app = express();
 
-app.use('/', paymentRoutes);
+app.use('/api', paymentRoutes);
 
 const __dirname = path.resolve();
 app.use('/assets', express.static(`${__dirname}/backend/public`));

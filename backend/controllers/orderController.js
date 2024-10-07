@@ -1,6 +1,6 @@
-import asyncHandler from "../middleware/asyncHandler.js";
-import Order from "../models/orderModel.js";
-import { stripe } from "../utils/stripe.js";
+import asyncHandler from '../middleware/asyncHandler.js';
+import Order from '../models/orderModel.js';
+import { stripe } from '../utils/stripe.js';
 
 const addOrderItems = asyncHandler(async (req, res) => {
   const {
@@ -15,7 +15,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
   if (orderItems && orderItems.length === 0) {
     res.status(400);
-    throw new Error("No order items");
+    throw new Error('No order items');
   } else {
     const order = new Order({
       orderItems: orderItems.map((x) => ({
@@ -45,15 +45,15 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
-    "user",
-    "name email",
+    'user',
+    'name email'
   );
 
   if (order) {
     res.status(200).json(order);
   } else {
     res.status(404);
-    throw new Error("Order not found");
+    throw new Error('Order not found');
   }
 });
 
@@ -61,16 +61,16 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (!order) {
-    throw new Error("Order not found");
+    throw new Error('Order not found');
   }
 
-  if (order.isPaid) {
-    throw new Error("Order is already paid");
+  if (order.status === 'paid') {
+    throw new Error('Order is already paid');
   }
 
   if (order.paymentIntentId) {
     const paymentIntent = await stripe.paymentIntents.retrieve(
-      order.paymentIntentId,
+      order.paymentIntentId
     );
     return res.json({
       clientSecret: paymentIntent.client_secret,
@@ -79,12 +79,12 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: order.getTotalCents(),
-    currency: "usd",
-    payment_method_types: ["card"],
+    currency: 'usd',
+    payment_method_types: ['card'],
   });
 
   order.paymentIntentId = paymentIntent.id;
-
+  order.status = 'processing';
   await order.save();
 
   return res.json({
@@ -104,12 +104,12 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
     res.status(200).json(updatedOrder);
   } else {
     res.status(404);
-    throw new Error("Order not found");
+    throw new Error('Order not found');
   }
 });
 
 const getOrders = asyncHandler(async (req, res) => {
-  const orders = await Order.find({}).populate("user", "id name");
+  const orders = await Order.find({}).populate('user', 'id name');
   res.status(200).json(orders);
 });
 

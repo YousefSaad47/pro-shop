@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { Trash2, Plus, Minus, ArrowLeft } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { addToCart, removeFromCart, clearCart } from "@/store";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Trash2, Plus, Minus, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { addToCart, removeFromCart, clearCart } from '@/store';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -13,15 +13,15 @@ const CartPage = () => {
   const { cartItems } = useSelector((state) => state.cart);
   const { userInfo } = useSelector((state) => state.auth);
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState("");
+  const [alertMessage, setAlertMessage] = useState('');
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.qty, 0);
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
     0
   );
-  const tax = subtotal * 0.1; // Assuming 10% tax
-  const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
+  const tax = subtotal * 0.1;
+  const shipping = totalItems === 0 ? 0 : subtotal > 100 ? 0 : 10;
   const total = subtotal + tax + shipping;
 
   const handleQtyChange = (item, change) => {
@@ -31,24 +31,26 @@ const CartPage = () => {
 
   const handleRemoveFromCart = (id) => {
     dispatch(removeFromCart(id));
-    setAlertMessage("Item removed from cart successfully.");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
+    showAlertWithMessage('Item removed from cart successfully.');
   };
 
   const handleClearCart = () => {
     dispatch(clearCart());
-    setAlertMessage("Cart cleared successfully.");
-    setShowAlert(true);
-    setTimeout(() => setShowAlert(false), 3000);
+    showAlertWithMessage('Cart cleared successfully.');
   };
 
   const handleProceedToCheckout = () => {
     if (!userInfo) {
-      navigate("/login?redirect=/shipping");
+      navigate('/login?redirect=/shipping');
     } else {
-      navigate("/shipping");
+      navigate('/shipping');
     }
+  };
+
+  const showAlertWithMessage = (message) => {
+    setAlertMessage(message);
+    setShowAlert(true);
+    setTimeout(() => setShowAlert(false), 3000);
   };
 
   useEffect(() => {
@@ -81,7 +83,6 @@ const CartPage = () => {
       </AnimatePresence>
 
       <div className="flex flex-col lg:flex-row gap-6">
-        {/* Cart Items */}
         <motion.div
           className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300"
           initial={{ opacity: 0 }}
@@ -163,7 +164,6 @@ const CartPage = () => {
           )}
         </motion.div>
 
-        {/* Order Summary */}
         <motion.div
           className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 h-fit"
           initial={{ opacity: 0, x: 20 }}
@@ -182,7 +182,7 @@ const CartPage = () => {
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
-              <span>{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+              <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
             </div>
           </div>
           <div className="border-t border-gray-300 pt-4 mb-6">

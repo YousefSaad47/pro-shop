@@ -1,14 +1,14 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { updateCart } from "../utils/cartUtils";
+import { createSlice } from '@reduxjs/toolkit';
+import { updateCart } from '../utils/cartUtils';
 
-const initialState = JSON.parse(localStorage.getItem("cart")) || {
+const initialState = JSON.parse(localStorage.getItem('cart')) || {
   cartItems: [],
   shippingAddress: {},
-  paymentMethod: "PayPal",
+  paymentMethod: 'Credit Card',
 };
 
 const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
     addToCart: (state, action) => {
@@ -21,7 +21,7 @@ const cartSlice = createSlice({
           el._id === existingItem._id ? item : el
         );
       } else {
-        state.cartItems = [...state.cartItems, item]; // immer
+        state.cartItems = [...state.cartItems, item];
       }
 
       return updateCart(state);

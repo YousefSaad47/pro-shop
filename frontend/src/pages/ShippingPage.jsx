@@ -1,33 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { saveShippingAddress } from "@/store";
-import FormContainer from "@/components/FormContainer";
-import CheckoutSteps from "@/components/CheckoutSteps";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { saveShippingAddress } from '@/store';
+import FormContainer from '@/components/FormContainer';
+import CheckoutSteps from '@/components/CheckoutSteps';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 
 const ShippingPage = () => {
   const { shippingAddress } = useSelector((state) => state.cart);
 
-  // Form states for shipping details
-  const [address, setAddress] = useState(shippingAddress.address || "");
-  const [city, setCity] = useState(shippingAddress.city || "");
+  const [address, setAddress] = useState(shippingAddress.address || '');
+  const [city, setCity] = useState(shippingAddress.city || '');
   const [postalCode, setPostalCode] = useState(
-    shippingAddress.postalCode || ""
+    shippingAddress.postalCode || ''
   );
-  const [country, setCountry] = useState(shippingAddress.country || "");
+  const [country, setCountry] = useState(shippingAddress.country || '');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Form submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
 
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
 
-    navigate("/payment");
+    navigate('/payment');
   };
 
   useEffect(() => {

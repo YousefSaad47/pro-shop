@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Product from "../components/Product";
-import HeroSection from "../components/HeroSection";
-import FeaturedSection from "../components/FeaturedSection";
-import TrendingSection from "../components/TrendingSection";
-import LoadingSkeleton from "../components/LoadingSkeleton";
-import ErrorMessage from "../components/ErrorMessage";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Search } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import Product from '../components/Product';
+import HeroSection from '../components/HeroSection';
+import FeaturedSection from '../components/FeaturedSection';
+import TrendingSection from '../components/TrendingSection';
+import LoadingSkeleton from '../components/LoadingSkeleton';
+import ErrorMessage from '../components/ErrorMessage';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const HomePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
 
   const {
@@ -21,21 +21,21 @@ const HomePage = () => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["products"],
+    queryKey: ['products'],
     queryFn: async () => {
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get('/api/products');
       return data;
     },
     staleTime: 5 * 60 * 1000,
     cacheTime: 5 * 60 * 1000,
   });
 
-  const categories = ["All", "Electronics", "Beauty", "Home"];
+  const categories = ['All', 'Electronics', 'Beauty', 'Home'];
 
   const filteredProducts = products
     ?.filter(
       (product) =>
-        (selectedCategory === "All" || product.category === selectedCategory) &&
+        (selectedCategory === 'All' || product.category === selectedCategory) &&
         product.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
     .sort((a, b) => b.rating - a.rating);
@@ -99,7 +99,7 @@ const HomePage = () => {
             />
             <Search
               className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-all duration-300 ${
-                isSearchFocused ? "text-indigo-500" : "text-gray-400"
+                isSearchFocused ? 'text-indigo-500' : 'text-gray-400'
               } group-hover:text-indigo-500`}
             />
           </div>
@@ -111,6 +111,7 @@ const HomePage = () => {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            d
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >

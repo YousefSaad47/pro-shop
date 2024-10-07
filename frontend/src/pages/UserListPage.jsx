@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import React, { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -8,13 +8,13 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { AlertCircle, Edit, Trash2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/table';
+import { AlertCircle, Edit, Trash2 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,7 +24,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
 const UserListPage = () => {
   const { toast } = useToast();
@@ -37,16 +37,16 @@ const UserListPage = () => {
     data: users,
     refetch,
   } = useQuery({
-    queryKey: ["users"],
+    queryKey: ['users'],
     queryFn: async () => {
-      const { data } = await axios.get("/api/users");
+      const { data } = await axios.get('/api/users');
       return data;
     },
   });
 
   const { mutateAsync: deleteUser, isLoading: deleteUserLoading } = useMutation(
     {
-      mutationKey: ["deleteUser"],
+      mutationKey: ['deleteUser'],
       mutationFn: async (userId) => {
         const { data } = await axios.delete(`/api/users/${userId}`);
         return data;
@@ -54,22 +54,23 @@ const UserListPage = () => {
       onSuccess: () => {
         refetch();
         toast({
-          title: "Success",
-          description: "User deleted successfully",
-          className: "bg-gray-800 text-white",
+          title: 'Success',
+          description: 'User deleted successfully',
+          className: 'bg-gray-800 text-white',
           duration: 3000,
         });
-        const deleteUserSound = new Audio("/assets/sounds/success.mp3");
+        const deleteUserSound = new Audio('/assets/sounds/success.mp3');
         deleteUserSound.play();
       },
       onError: () => {
         toast({
-          title: "Error",
-          description: "Failed to delete user",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to delete user',
+          variant: 'destructive',
           duration: 3000,
+          className: 'bg-gradient-to-r from-red-500 to-pink-600 text-white',
         });
-        const deleteUserSound = new Audio("/assets/sounds/error.mp3");
+        const deleteUserSound = new Audio('/assets/sounds/error.mp3');
         deleteUserSound.play();
       },
     }
@@ -81,10 +82,11 @@ const UserListPage = () => {
       await deleteUser(userId);
     } catch (err) {
       toast({
-        title: "Error",
-        description: "Cannot delete user",
-        variant: "destructive",
+        title: 'Error',
+        description: "Can't delete an admin user",
+        variant: 'destructive',
         duration: 3000,
+        className: 'bg-gradient-to-r from-red-500 to-pink-600 text-white',
       });
     }
   };
@@ -98,7 +100,7 @@ const UserListPage = () => {
     <Table>
       <TableHeader>
         <TableRow>
-          {["ID", "NAME", "EMAIL", "ADMIN", "ACTIONS"].map((header) => (
+          {['ID', 'NAME', 'EMAIL', 'ADMIN', 'ACTIONS'].map((header) => (
             <TableHead key={header}>
               <Skeleton className="h-4 w-20" />
             </TableHead>
@@ -162,7 +164,7 @@ const UserListPage = () => {
                 <TableCell className="font-medium">{user._id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.isAdmin ? "Yes" : "No"}</TableCell>
+                <TableCell>{user.isAdmin ? 'Yes' : 'No'}</TableCell>
                 <TableCell>
                   <div className="flex space-x-2">
                     <Link to={`/admin/user/${user._id}/edit`}>
@@ -213,7 +215,7 @@ const UserListPage = () => {
                 {deleteUserLoading ? (
                   <Skeleton className="h-4 w-20" />
                 ) : (
-                  "Delete"
+                  'Delete'
                 )}
               </AlertDialogAction>
             </AlertDialogFooter>

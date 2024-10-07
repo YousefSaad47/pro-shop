@@ -1,23 +1,23 @@
-import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
-import { useMutation } from "@tanstack/react-query";
-import { clearCart } from "@/store";
-import CheckoutSteps from "@/components/CheckoutSteps";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { addDecimals } from "@/utils/cartUtils";
+import React, { useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import { clearCart } from '@/store';
+import CheckoutSteps from '@/components/CheckoutSteps';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { addDecimals } from '@/utils/cartUtils';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { ShoppingCart, Truck, CreditCard, Package } from "lucide-react";
-import { motion } from "framer-motion";
+} from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { ShoppingCart, Truck, CreditCard, Package } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ const PlaceOrderPage = () => {
   const cart = useSelector((state) => state.cart);
   const { cartItems, shippingAddress, paymentMethod } = cart;
 
-  // Calculations
   const itemsPrice = Number(
     addDecimals(cartItems.reduce((acc, item) => acc + item.price * item.qty, 0))
   );
@@ -36,18 +35,18 @@ const PlaceOrderPage = () => {
 
   const { mutateAsync: placeOrder, isLoading } = useMutation({
     mutationFn: async (orderData) => {
-      const { data } = await axios.post("/api/orders", orderData);
+      const { data } = await axios.post('/api/orders', orderData);
       return data;
     },
     onSuccess: (data) => {
-      toast.success("Order placed successfully!");
-      const successSound = new Audio("/assets/sounds/success.mp3");
+      toast.success('Order placed successfully!');
+      const successSound = new Audio('/assets/sounds/success.mp3');
       successSound.play();
       dispatch(clearCart());
       navigate(`/orders/${data._id}`);
     },
     onError: () => {
-      toast.error("Order placement failed. Please try again.");
+      toast.error('Order placement failed. Please try again.');
     },
   });
 
@@ -57,9 +56,9 @@ const PlaceOrderPage = () => {
 
   useEffect(() => {
     if (!shippingAddress.address) {
-      navigate("/shipping");
+      navigate('/shipping');
     } else if (!paymentMethod) {
-      navigate("/payment");
+      navigate('/payment');
     }
   }, [paymentMethod, shippingAddress.address, navigate]);
 
@@ -75,7 +74,7 @@ const PlaceOrderPage = () => {
         totalPrice,
       });
     } catch (err) {
-      toast.error(err?.message || "An error occurred while placing the order.");
+      toast.error(err?.message || 'An error occurred while placing the order.');
     }
   };
 
@@ -103,7 +102,7 @@ const PlaceOrderPage = () => {
             </CardHeader>
             <CardContent className="pt-4">
               <p>
-                {shippingAddress.address}, {shippingAddress.city}{" "}
+                {shippingAddress.address}, {shippingAddress.city}{' '}
                 {shippingAddress.postalCode}, {shippingAddress.country}
               </p>
             </CardContent>
@@ -206,7 +205,7 @@ const PlaceOrderPage = () => {
                 disabled={cartItems.length === 0 || isLoading}
                 className="w-full py-3 text-lg"
               >
-                {isLoading ? "Processing..." : "Place Order"}
+                {isLoading ? 'Processing...' : 'Place Order'}
               </Button>
             </CardFooter>
           </Card>

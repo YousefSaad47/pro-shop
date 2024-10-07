@@ -1,6 +1,6 @@
-import asyncHandler from "../middleware/asyncHandler.js";
-import User from "../models/userModel.js";
-import generateToken from "../utils/generateToken.js";
+import asyncHandler from '../middleware/asyncHandler.js';
+import User from '../models/userModel.js';
+import generateToken from '../utils/generateToken.js';
 
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
@@ -18,10 +18,10 @@ const authUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(401);
-    throw new Error("Invalid email or password");
+    throw new Error('Invalid email or password');
   }
 
-  res.send("authUser");
+  res.send('authUser');
 });
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -31,7 +31,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   const user = await User.create({
@@ -51,17 +51,17 @@ const registerUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(400);
-    throw new Error("Invalid user data");
+    throw new Error('Invalid user data');
   }
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-  res.cookie("jwt", "", {
+  res.cookie('jwt', '', {
     httpOnly: true,
     expires: new Date(0),
   });
 
-  res.status(200).json({ message: "Logged out successfully" });
+  res.status(200).json({ message: 'Logged out successfully' });
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
@@ -76,7 +76,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -100,7 +100,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -110,12 +110,12 @@ const getUsers = asyncHandler(async (req, res) => {
 });
 
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id).select('-password');
   if (user) {
     res.status(200).json(user);
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -124,14 +124,14 @@ const deleteUser = asyncHandler(async (req, res) => {
   if (user) {
     if (user.isAdmin) {
       res.status(400);
-      throw new Error("Cannot delete admin");
+      throw new Error('Cannot delete admin');
     }
 
     await user.deleteOne({ _id: user._id });
-    res.status(200).json({ message: "User deleted successfully" });
+    res.status(200).json({ message: 'User deleted successfully' });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
@@ -153,7 +153,7 @@ const updateUser = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 });
 
