@@ -1,6 +1,6 @@
-import React, { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import React, { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   Table,
   TableBody,
@@ -8,13 +8,19 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { AlertCircle, Edit, Trash2 } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+} from '@/components/ui/table';
+import {
+  AlertCircle,
+  Edit,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,60 +31,65 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
+
+const ITEMS_PER_PAGE = 10;
 
 const ProductListPage = () => {
   const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const {
     isLoading,
     error,
-    data: products,
+    data: productsData,
     refetch,
   } = useQuery({
-    queryKey: ["products"],
+    queryKey: ['products', currentPage],
     queryFn: async () => {
-      const { data } = await axios.get("/api/products");
+      const { data } = await axios.get(
+        `/api/products?page=${currentPage}&limit=${ITEMS_PER_PAGE}`
+      );
       return data;
     },
   });
 
   const { mutateAsync: createProduct, isLoading: createProductLoading } =
     useMutation({
-      mutationKey: ["createProduct"],
+      mutationKey: ['createProduct'],
       mutationFn: async () => {
-        const { data } = await axios.post("/api/products");
+        const { data } = await axios.post('/api/products');
         return data;
       },
       onSuccess: () => {
         refetch();
         toast({
-          title: "Success",
-          description: "Product created successfully",
-          className: "bg-gray-800 text-white",
+          title: 'Success',
+          description: 'Product created successfully',
+          className: 'bg-gray-800 text-white',
           duration: 3000,
         });
-        const createProductSound = new Audio("/assets/sounds/success.mp3");
+        const createProductSound = new Audio('/assets/sounds/success.mp3');
         createProductSound.play();
       },
       onError: () => {
         toast({
-          title: "Error",
-          description: "Failed to create product",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to create product',
+          variant: 'destructive',
           duration: 3000,
         });
-        const createProductSound = new Audio("/assets/sounds/error.mp3");
+        const createProductSound = new Audio('/assets/sounds/error.mp3');
         createProductSound.play();
       },
     });
 
   const { mutateAsync: deleteProduct, isLoading: deleteProductLoading } =
     useMutation({
-      mutationKey: ["deleteProduct"],
+      mutationKey: ['deleteProduct'],
       mutationFn: async (productId) => {
         const { data } = await axios.delete(`/api/products/${productId}`);
         return data;
@@ -86,17 +97,17 @@ const ProductListPage = () => {
       onSuccess: () => {
         refetch();
         toast({
-          title: "Success",
-          description: "Product deleted successfully",
-          className: "bg-gray-800 text-white",
+          title: 'Success',
+          description: 'Product deleted successfully',
+          className: 'bg-gray-800 text-white',
           duration: 3000,
         });
       },
       onError: () => {
         toast({
-          title: "Error",
-          description: "Failed to delete product",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to delete product',
+          variant: 'destructive',
           duration: 3000,
         });
       },
@@ -106,16 +117,16 @@ const ProductListPage = () => {
     setIsDeleteDialogOpen(false);
     try {
       await deleteProduct(productId);
-      const deleteProductSound = new Audio("/assets/sounds/success.mp3");
+      const deleteProductSound = new Audio('/assets/sounds/success.mp3');
       deleteProductSound.play();
     } catch (err) {
       toast({
-        title: "Error",
-        description: "Failed to delete product",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to delete product',
+        variant: 'destructive',
         duration: 3000,
       });
-      const deleteProductSound = new Audio("/assets/sounds/error.mp3");
+      const deleteProductSound = new Audio('/assets/sounds/error.mp3');
       deleteProductSound.play();
     }
   };
@@ -126,9 +137,9 @@ const ProductListPage = () => {
       await createProduct();
     } catch (err) {
       toast({
-        title: "Error",
-        description: "Failed to create product",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to create product',
+        variant: 'destructive',
         duration: 3000,
       });
     }
@@ -139,11 +150,15 @@ const ProductListPage = () => {
     setIsDeleteDialogOpen(true);
   };
 
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
   const TableSkeleton = () => (
     <Table>
       <TableHeader>
         <TableRow>
-          {["ID", "NAME", "PRICE", "CATEGORY", "BRAND", "STOCK", "ACTIONS"].map(
+          {['ID', 'NAME', 'PRICE', 'CATEGORY', 'BRAND', 'STOCK', 'ACTIONS'].map(
             (header) => (
               <TableHead key={header}>
                 <Skeleton className="h-4 w-20" />
@@ -153,7 +168,7 @@ const ProductListPage = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[...Array(5)].map((_, index) => (
+        {[...Array(ITEMS_PER_PAGE)].map((_, index) => (
           <TableRow key={index}>
             {[...Array(7)].map((_, cellIndex) => (
               <TableCell key={cellIndex}>
@@ -189,6 +204,8 @@ const ProductListPage = () => {
     );
   }
 
+  const { products, totalPages, currentPage: responsePage } = productsData;
+
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-4">
@@ -218,7 +235,7 @@ const ProductListPage = () => {
                 {createProductLoading ? (
                   <Skeleton className="h-4 w-20" />
                 ) : (
-                  "Create"
+                  'Create'
                 )}
               </AlertDialogAction>
             </AlertDialogFooter>
@@ -275,6 +292,26 @@ const ProductListPage = () => {
         </Table>
       </div>
 
+      <div className="flex justify-center items-center mt-4 space-x-2">
+        <Button
+          variant="outline"
+          onClick={() => handlePageChange(responsePage - 1)}
+          disabled={responsePage <= 1}
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </Button>
+        <span className="text-sm">
+          Page {responsePage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() => handlePageChange(responsePage + 1)}
+          disabled={responsePage >= totalPages}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
+
       {productToDelete && (
         <AlertDialog
           open={isDeleteDialogOpen}
@@ -298,7 +335,7 @@ const ProductListPage = () => {
                 {deleteProductLoading ? (
                   <Skeleton className="h-4 w-20" />
                 ) : (
-                  "Delete"
+                  'Delete'
                 )}
               </AlertDialogAction>
             </AlertDialogFooter>

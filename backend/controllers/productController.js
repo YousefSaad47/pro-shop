@@ -1,10 +1,44 @@
-import asyncHandler from "../middleware/asyncHandler.js";
-import Product from "../models/productModel.js";
+import asyncHandler from '../middleware/asyncHandler.js';
+import Product from '../models/productModel.js';
 
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 12;
+  const category = req.query.category;
+  const search = req.query.search;
 
-  return res.status(200).json(products);
+  const skip = (page - 1) * limit;
+
+  let query = {};
+  if (category) {
+    query.category = category;
+  }
+  if (search) {
+    query.name = { $regex: search, $options: 'i' };
+  }
+
+  const totalProducts = await Product.countDocuments(query);
+  const totalPages = Math.ceil(totalProducts / limit);
+
+  const products = await Product.find(query)
+    .sort({ rating: -1 })
+    .limit(limit)
+    .skip(skip);
+
+  const featuredProducts = await Product.find({}).sort({ rating: -1 }).limit(4);
+
+  const trendingProducts = await Product.find({ rating: { $gte: 4 } })
+    .sort({ createdAt: -1 })
+    .limit(4);
+
+  return res.status(200).json({
+    products,
+    featuredProducts,
+    trendingProducts,
+    currentPage: page,
+    totalPages,
+    totalProducts,
+  });
 });
 
 const getProductById = asyncHandler(async (req, res) => {
@@ -14,21 +48,21 @@ const getProductById = asyncHandler(async (req, res) => {
     return res.status(200).json(product);
   } else {
     res.status(404);
-    throw new Error("Resource not found");
+    throw new Error('Resource not found');
   }
 });
 
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: "Sample name",
+    name: 'Sample name',
     price: 0,
     user: req.user._id,
-    image: "/images/sample.jpg",
-    brand: "Sample brand",
-    category: "Sample category",
+    image: '/images/sample.jpg',
+    brand: 'Sample brand',
+    category: 'Sample category',
     countInStock: 0,
     numReviews: 0,
-    description: "Sample description",
+    description: 'Sample description',
   });
 
   const createdProduct = await product.save();
@@ -53,7 +87,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.status(200).json(updatedProduct);
   } else {
     res.status(404);
-    throw new Error("Resource not found");
+    throw new Error('Resource not found');
   }
 });
 
@@ -61,10 +95,10 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
   if (product) {
     await Product.deleteOne({ _id: product._id });
-    res.status(200).json({ message: "Product deleted" });
+    res.status(200).json({ message: 'Product deleted' });
   } else {
     res.status(404);
-    throw new Error("Resource not found");
+    throw new Error('Resource not found');
   }
 });
 
@@ -80,7 +114,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
     if (alreadyReviewed) {
       res.status(400);
-      throw new Error("Product already reviewed");
+      throw new Error('Product already reviewed');
     }
 
     const review = {
@@ -99,10 +133,10 @@ const createProductReview = asyncHandler(async (req, res) => {
 
     await product.save();
 
-    res.status(201).json({ message: "Review added" });
+    res.status(201).json({ message: 'Review added' });
   } else {
     res.status(404);
-    throw new Error("Product not found");
+    throw new Error('Product not found');
   }
 });
 

@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 const HeroSection = () => (
   <section className="relative h-[80vh] bg-gradient-to-r from-indigo-700 via-purple-700 to-pink-700 rounded-3xl overflow-hidden mb-24">

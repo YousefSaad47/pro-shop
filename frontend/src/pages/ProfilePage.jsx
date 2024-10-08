@@ -32,6 +32,8 @@ import {
   Truck,
   LogOut,
   ShieldCheck,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -71,6 +73,7 @@ const ProfilePage = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -123,10 +126,12 @@ const ProfilePage = () => {
     },
   });
 
-  const { data: myOrders, isLoading: isMyOrdersLoading } = useQuery({
-    queryKey: ['myOrders'],
+  const { data: ordersData, isLoading: isMyOrdersLoading } = useQuery({
+    queryKey: ['myOrders', currentPage],
     queryFn: async () => {
-      const { data } = await axios.get('/api/orders/myorders');
+      const { data } = await axios.get(
+        `/api/orders/myorders?pageNumber=${currentPage}`
+      );
       return data;
     },
   });
@@ -180,6 +185,10 @@ const ProfilePage = () => {
         Pending
       </span>
     );
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -408,7 +417,7 @@ const ProfilePage = () => {
                 <CardContent>
                   {isMyOrdersLoading ? (
                     <div className="space-y-4">
-                      {[...Array(3)].map((_, i) => (
+                      {[...Array(7)].map((_, i) => (
                         <div key={i} className="flex items-center space-x-4">
                           <Skeleton className="h-12 w-12 rounded-full" />
                           <div className="space-y-2">
@@ -419,35 +428,33 @@ const ProfilePage = () => {
                       ))}
                     </div>
                   ) : (
-                    <div className="overflow-y-auto max-h-[500px]">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead className="text-gray-600">
-                              Order ID
-                            </TableHead>
-                            <TableHead className="text-gray-600">
-                              <div className="flex items-center space-x-1">
-                                <Calendar className="h-4 w-4" />
-                                <span>Date</span>
-                              </div>
-                            </TableHead>
-                            <TableHead className="text-gray-600">
-                              <div className="flex items-center space-x-1">
-                                <DollarSign className="h-4 w-4" />
-                                <span>Total</span>
-                              </div>
-                            </TableHead>
-                            <TableHead className="text-gray-600">
-                              Status
-                            </TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {myOrders
-                            ?.slice()
-                            .reverse()
-                            .map((order) => (
+                    <>
+                      <div className="overflow-y-auto max-h-[500px]">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead className="text-gray-600">
+                                Order ID
+                              </TableHead>
+                              <TableHead className="text-gray-600">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="h-4 w-4" />
+                                  <span>Date</span>
+                                </div>
+                              </TableHead>
+                              <TableHead className="text-gray-600">
+                                <div className="flex items-center space-x-1">
+                                  <DollarSign className="h-4 w-4" />
+                                  <span>Total</span>
+                                </div>
+                              </TableHead>
+                              <TableHead className="text-gray-600">
+                                Status
+                              </TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {ordersData?.orders.map((order) => (
                               <TableRow
                                 key={order._id}
                                 className="hover:bg-gray-50"
@@ -479,9 +486,33 @@ const ProfilePage = () => {
                                 </TableCell>
                               </TableRow>
                             ))}
-                        </TableBody>
-                      </Table>
-                    </div>
+                          </TableBody>
+                        </Table>
+                      </div>
+                      <div className="mt-4 flex justify-between items-center">
+                        <p className="text-sm text-gray-600">
+                          Showing page {ordersData?.page} of {ordersData?.pages}
+                        </p>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                          >
+                            <ChevronLeft className="h-4 w-4 mr-2" />
+                            Previous
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === ordersData?.pages}
+                          >
+                            Next
+                            <ChevronRight className="h-4 w-4 ml-2" />
+                          </Button>
+                        </div>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>

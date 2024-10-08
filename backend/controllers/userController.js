@@ -105,8 +105,25 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 });
 
 const getUsers = asyncHandler(async (req, res) => {
-  const users = await User.find({});
-  res.status(200).json(users);
+  const page = parseInt(req.query.page) || 1;
+  const limit = 7;
+
+  const startIndex = (page - 1) * limit;
+
+  const totalUsers = await User.countDocuments({});
+  const totalPages = Math.ceil(totalUsers / limit);
+
+  const users = await User.find({})
+    .limit(limit)
+    .skip(startIndex)
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    users,
+    page,
+    totalPages,
+    totalUsers,
+  });
 });
 
 const getUserById = asyncHandler(async (req, res) => {

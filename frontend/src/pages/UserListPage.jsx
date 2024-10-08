@@ -30,16 +30,12 @@ const UserListPage = () => {
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    isLoading,
-    error,
-    data: users,
-    refetch,
-  } = useQuery({
-    queryKey: ['users'],
+  const { isLoading, error, data, refetch } = useQuery({
+    queryKey: ['users', currentPage],
     queryFn: async () => {
-      const { data } = await axios.get('/api/users');
+      const { data } = await axios.get(`/api/users?page=${currentPage}`);
       return data;
     },
   });
@@ -108,7 +104,7 @@ const UserListPage = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[...Array(5)].map((_, index) => (
+        {[...Array(7)].map((_, index) => (
           <TableRow key={index}>
             {[...Array(5)].map((_, cellIndex) => (
               <TableCell key={cellIndex}>
@@ -120,6 +116,34 @@ const UserListPage = () => {
       </TableBody>
     </Table>
   );
+
+  const renderPagination = () => {
+    const totalPages = data?.totalPages || 1;
+
+    return (
+      <div className="flex justify-center mt-4 space-x-2">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </Button>
+        <span className="py-2 px-4 border rounded">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </Button>
+      </div>
+    );
+  };
 
   if (isLoading) {
     return (
@@ -159,7 +183,7 @@ const UserListPage = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {users.map((user) => (
+            {data.users.map((user) => (
               <TableRow key={user._id} className="hover:bg-gray-50">
                 <TableCell className="font-medium">{user._id}</TableCell>
                 <TableCell>{user.name}</TableCell>
@@ -191,6 +215,8 @@ const UserListPage = () => {
           </TableBody>
         </Table>
       </div>
+
+      {renderPagination()}
 
       {userToDelete && (
         <AlertDialog
