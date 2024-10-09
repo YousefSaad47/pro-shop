@@ -1,26 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { useParams, useNavigate, Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import FormContainer from "@/components/FormContainer";
-import { FaSpinner } from "react-icons/fa";
+import React, { useState, useEffect } from 'react';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import axios from 'axios';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import FormContainer from '@/components/FormContainer';
+import { FaSpinner } from 'react-icons/fa';
 
 const ProductEditPage = () => {
   const { id: productId } = useParams();
   const { toast } = useToast();
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [countInStock, setCountInStock] = useState("");
-  const [description, setDescription] = useState("");
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [image, setImage] = useState('');
+  const [brand, setBrand] = useState('');
+  const [category, setCategory] = useState('');
+  const [countInStock, setCountInStock] = useState('');
+  const [description, setDescription] = useState('');
   const [imageFile, setImageFile] = useState(null);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: product,
@@ -29,7 +33,7 @@ const ProductEditPage = () => {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["product", productId],
+    queryKey: ['product', productId],
     queryFn: async () => {
       const { data } = await axios.get(`/api/products/${productId}`);
       return data;
@@ -41,7 +45,7 @@ const ProductEditPage = () => {
 
   const { mutateAsync: updateProduct, isLoading: updateProductLoading } =
     useMutation({
-      mutationKey: ["updateProduct"],
+      mutationKey: ['updateProduct'],
       mutationFn: async (body) => {
         const { data } = await axios.put(`/api/products/${body._id}`, body);
         return data;
@@ -49,21 +53,21 @@ const ProductEditPage = () => {
       onSuccess: () => {
         refetch();
         toast({
-          title: "Success",
-          description: "Product updated successfully",
-          className: "bg-gray-800 text-white",
+          title: 'Success',
+          description: 'Product updated successfully',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
           duration: 3000,
         });
-        const updateProductSound = new Audio("/assets/sounds/success.mp3");
+        const updateProductSound = new Audio('/assets/sounds/success.mp3');
         updateProductSound.play();
       },
       onError: () => {
         toast({
-          title: "Error",
-          description: "Failed to update product",
-          variant: "destructive",
+          title: 'Error',
+          description: 'Failed to update product',
+          variant: 'destructive',
         });
-        const updateProductSound = new Audio("/assets/sounds/error.mp3");
+        const updateProductSound = new Audio('/assets/sounds/error.mp3');
         updateProductSound.play();
       },
     });
@@ -72,27 +76,27 @@ const ProductEditPage = () => {
     mutateAsync: uploadProductImage,
     isLoading: uploadProductImageLoading,
   } = useMutation({
-    mutationKey: ["uploadProductImage"],
+    mutationKey: ['uploadProductImage'],
     mutationFn: async (body) => {
-      const { data } = await axios.post("/api/upload", body);
+      const { data } = await axios.post('/api/upload', body);
       return data;
     },
     onSuccess: (data) => {
       setImage(data.image);
       toast({
-        title: "Success",
-        description: "Product image uploaded successfully",
-        className: "bg-gray-800 text-white",
+        title: 'Success',
+        description: 'Product image uploaded successfully',
+        className: 'bg-gray-800 text-white',
         duration: 3000,
       });
-      const updateProductSound = new Audio("/assets/sounds/success.mp3");
+      const updateProductSound = new Audio('/assets/sounds/success.mp3');
       updateProductSound.play();
     },
     onError: () => {
       toast({
-        title: "Error",
-        description: "Failed to upload product image",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to upload product image',
+        variant: 'destructive',
       });
     },
   });
@@ -100,7 +104,7 @@ const ProductEditPage = () => {
   const handleUploadImage = async (e) => {
     setImageFile(e.target.files[0]);
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    formData.append('image', e.target.files[0]);
 
     await uploadProductImage(formData);
   };
@@ -134,12 +138,12 @@ const ProductEditPage = () => {
         description,
       });
 
-      navigate("/admin/productlist");
+      navigate('/admin/productlist');
     } catch (err) {
       toast({
-        title: "Error",
-        description: "Failed to update product",
-        variant: "destructive",
+        title: 'Error',
+        description: 'Failed to update product',
+        variant: 'destructive',
       });
     }
   };
@@ -263,7 +267,7 @@ const ProductEditPage = () => {
                 {updateProductLoading ? (
                   <FaSpinner className="h-6 w-6 animate-spin" />
                 ) : (
-                  "Update"
+                  'Update'
                 )}
               </Button>
             </form>

@@ -62,7 +62,7 @@
     @apply border-border;
   }
   body {
-    @apply mt-20;
+    @apply mt-24;
     @apply bg-background text-foreground;
     @apply overflow-x-hidden;
   }

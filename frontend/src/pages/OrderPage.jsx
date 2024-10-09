@@ -197,12 +197,6 @@ const OrderPage = () => {
         <p className="text-gray-500 mb-4">
           We couldn't fetch the order details. Please try again later.
         </p>
-        <Link
-          to="/placeorder"
-          className="text-indigo-600 hover:text-indigo-700 font-semibold text-lg"
-        >
-          &larr; Back to Orders
-        </Link>
       </div>
     );
   }
@@ -223,13 +217,6 @@ const OrderPage = () => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <Link
-        to="/placeorder"
-        className="inline-flex items-center text-indigo-600 hover:text-indigo-700 font-semibold mb-8 text-lg"
-      >
-        <ArrowLeft className="mr-2" size={24} /> Back to Orders
-      </Link>
-
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <h1 className="text-3xl font-bold text-gray-800 mb-4 md:mb-0">
           Order #{order._id}

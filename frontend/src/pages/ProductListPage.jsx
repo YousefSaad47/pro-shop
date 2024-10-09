@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import {
@@ -20,6 +20,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import {
   AlertDialog,
@@ -35,12 +36,119 @@ import {
 
 const ITEMS_PER_PAGE = 10;
 
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const [inputPage, setInputPage] = useState('');
+
+  const getPageNumbers = () => {
+    const pages = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, 5);
+      } else if (currentPage >= totalPages - 2) {
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+          pages.push(i);
+        }
+      }
+    }
+
+    return pages;
+  };
+
+  const handleInputChange = (e) => {
+    setInputPage(e.target.value);
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleGoToPage();
+    }
+  };
+
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(inputPage, 10);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber);
+      setInputPage('');
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center mt-4 space-x-2">
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      {getPageNumbers().map((pageNum) => (
+        <Button
+          key={pageNum}
+          variant={currentPage === pageNum ? 'default' : 'outline'}
+          onClick={() => onPageChange(pageNum)}
+          className={`w-8 h-8 p-0 ${
+            currentPage === pageNum ? 'bg-primary text-primary-foreground' : ''
+          }`}
+        >
+          {pageNum}
+        </Button>
+      ))}
+
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+
+      <div className="flex items-center ml-4 space-x-2">
+        <Input
+          type="number"
+          min={1}
+          max={totalPages}
+          value={inputPage}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          placeholder="Go to page"
+          className="text-xs w-32 h-8"
+        />
+        <Button
+          variant="outline"
+          onClick={handleGoToPage}
+          disabled={
+            !inputPage ||
+            parseInt(inputPage, 10) < 1 ||
+            parseInt(inputPage, 10) > totalPages
+          }
+        >
+          Go
+        </Button>
+      </div>
+    </div>
+  );
+};
+
 const ProductListPage = () => {
   const { toast } = useToast();
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     isLoading,
@@ -69,7 +177,7 @@ const ProductListPage = () => {
         toast({
           title: 'Success',
           description: 'Product created successfully',
-          className: 'bg-gray-800 text-white',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
           duration: 3000,
         });
         const createProductSound = new Audio('/assets/sounds/success.mp3');
@@ -99,7 +207,7 @@ const ProductListPage = () => {
         toast({
           title: 'Success',
           description: 'Product deleted successfully',
-          className: 'bg-gray-800 text-white',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
           duration: 3000,
         });
       },
@@ -292,25 +400,11 @@ const ProductListPage = () => {
         </Table>
       </div>
 
-      <div className="flex justify-center items-center mt-4 space-x-2">
-        <Button
-          variant="outline"
-          onClick={() => handlePageChange(responsePage - 1)}
-          disabled={responsePage <= 1}
-        >
-          <ChevronLeft className="h-4 w-4" />
-        </Button>
-        <span className="text-sm">
-          Page {responsePage} of {totalPages}
-        </span>
-        <Button
-          variant="outline"
-          onClick={() => handlePageChange(responsePage + 1)}
-          disabled={responsePage >= totalPages}
-        >
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
+      <Pagination
+        currentPage={responsePage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
 
       {productToDelete && (
         <AlertDialog

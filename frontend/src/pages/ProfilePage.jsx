@@ -4,6 +4,7 @@ import { setCredentials, logout } from '@/store';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { clearCart } from '@/store';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -37,6 +38,112 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const ITEMS_PER_PAGE = 10;
+
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+  const [inputPage, setInputPage] = useState('');
+
+  const getPageNumbers = () => {
+    const pages = [];
+
+    if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+        pages.push(i);
+      }
+    } else {
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, 5);
+      } else if (currentPage >= totalPages - 2) {
+        for (let i = totalPages - 4; i <= totalPages; i++) {
+          pages.push(i);
+        }
+      } else {
+        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+          pages.push(i);
+        }
+      }
+    }
+
+    return pages;
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setInputPage(value);
+  };
+
+  const handleInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleGoToPage();
+    }
+  };
+
+  const handleGoToPage = () => {
+    const pageNumber = parseInt(inputPage, 10);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber);
+      setInputPage('');
+    }
+  };
+
+  return (
+    <div className="flex justify-center items-center mt-4 space-x-2">
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+      >
+        <ChevronLeft className="h-4 w-4" />
+      </Button>
+
+      {getPageNumbers().map((pageNum) => (
+        <Button
+          key={pageNum}
+          variant={currentPage === pageNum ? 'default' : 'outline'}
+          onClick={() => onPageChange(pageNum)}
+          className={`w-8 h-8 p-0 ${
+            currentPage === pageNum ? 'bg-primary text-primary-foreground' : ''
+          }`}
+        >
+          {pageNum}
+        </Button>
+      ))}
+
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+      >
+        <ChevronRight className="h-4 w-4" />
+      </Button>
+
+      <div className="flex items-center ml-4 space-x-2">
+        <Input
+          type="number"
+          min={1}
+          max={totalPages}
+          value={inputPage}
+          onChange={handleInputChange}
+          onKeyDown={handleInputKeyDown}
+          placeholder="Go to page"
+          className="text-xs w-32 h-8"
+        />
+        <Button
+          variant="outline"
+          onClick={handleGoToPage}
+          disabled={
+            !inputPage ||
+            parseInt(inputPage, 10) < 1 ||
+            parseInt(inputPage, 10) > totalPages
+          }
+        >
+          Go
+        </Button>
+      </div>
+    </div>
+  );
+};
 
 const SuccessOverlay = ({ onComplete }) => {
   useEffect(() => {
@@ -80,6 +187,10 @@ const ProfilePage = () => {
   const { userInfo } = useSelector((state) => state.auth);
   const { toast } = useToast();
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { mutateAsync: logoutApiCall } = useMutation({
     mutationFn: async () => {
       const res = await axios.post('/api/users/logout');
@@ -118,8 +229,10 @@ const ProfilePage = () => {
       toast({
         title: '⚠️ Update Failed',
         description:
-          error.response?.data?.message || 'Could not update profile',
+          error.response?.data?.message || 'Could not update user profile',
         variant: 'destructive',
+        className: 'bg-gradient-to-r from-red-500 to-pink-600 text-white',
+        duration: 3000,
       });
       const updateUserSound = new Audio('/assets/sounds/error.mp3');
       updateUserSound.play();
@@ -130,7 +243,7 @@ const ProfilePage = () => {
     queryKey: ['myOrders', currentPage],
     queryFn: async () => {
       const { data } = await axios.get(
-        `/api/orders/myorders?pageNumber=${currentPage}`
+        `/api/orders/myorders?pageNumber=${currentPage}&limit=${ITEMS_PER_PAGE}`
       );
       return data;
     },
@@ -151,7 +264,11 @@ const ProfilePage = () => {
         title: '⚠️ Password Mismatch',
         description: 'The passwords you entered do not match',
         variant: 'destructive',
+        className: 'bg-gradient-to-r from-yellow-500 to-orange-600 text-white',
+        duration: 3000,
       });
+      const updateUserSound = new Audio('/assets/sounds/error.mp3');
+      updateUserSound.play();
       return;
     }
 
@@ -489,29 +606,11 @@ const ProfilePage = () => {
                           </TableBody>
                         </Table>
                       </div>
-                      <div className="mt-4 flex justify-between items-center">
-                        <p className="text-sm text-gray-600">
-                          Showing page {ordersData?.page} of {ordersData?.pages}
-                        </p>
-                        <div className="flex space-x-2">
-                          <Button
-                            variant="outline"
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                          >
-                            <ChevronLeft className="h-4 w-4 mr-2" />
-                            Previous
-                          </Button>
-                          <Button
-                            variant="outline"
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === ordersData?.pages}
-                          >
-                            Next
-                            <ChevronRight className="h-4 w-4 ml-2" />
-                          </Button>
-                        </div>
-                      </div>
+                      <Pagination
+                        currentPage={ordersData?.page}
+                        totalPages={ordersData?.pages}
+                        onPageChange={handlePageChange}
+                      />
                     </>
                   )}
                 </CardContent>

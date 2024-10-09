@@ -15,7 +15,6 @@ import {
   Shield,
   Mail,
   User,
-  Lock,
   CheckCircle2,
 } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -72,12 +71,14 @@ const UserEditPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [isAdmin, setIsAdmin] = useState(false);
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [currentUser, setCurrentUser] = useState(null);
   const [showSuccessOverlay, setShowSuccessOverlay] = useState(false);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const {
     data: user,
@@ -148,19 +149,6 @@ const UserEditPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      toast({
-        title: '⚠️ Password Mismatch',
-        description: 'The passwords you entered do not match',
-        variant: 'destructive',
-        className: 'bg-gradient-to-r from-yellow-500 to-orange-600 text-white',
-        duration: 3000,
-      });
-      const updateUserSound = new Audio('/assets/sounds/error.mp3');
-      updateUserSound.play();
-      return;
-    }
-
     const updates = {
       _id: userId,
       name,
@@ -169,10 +157,6 @@ const UserEditPage = () => {
 
     if (isCurrentUserAdmin) {
       updates.isAdmin = isEditingSelf ? true : isAdmin;
-    }
-
-    if (password) {
-      updates.password = password;
     }
 
     await updateUserMutation.mutateAsync(updates);
@@ -287,30 +271,6 @@ const UserEditPage = () => {
                         disabled={getFieldDisabledState('email')}
                         className="pl-10"
                         required
-                      />
-                    </div>
-
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        type="password"
-                        id="password"
-                        placeholder="Enter new password (optional)"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                      <Input
-                        type="password"
-                        id="confirmPassword"
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        className="pl-10"
                       />
                     </div>
 

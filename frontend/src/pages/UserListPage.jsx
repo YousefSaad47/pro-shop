@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import {
@@ -9,12 +9,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { AlertCircle, Edit, Trash2 } from 'lucide-react';
+import {
+  AlertCircle,
+  Edit,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Input } from '@/components/ui/input';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +38,11 @@ const UserListPage = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [goToPage, setGoToPage] = useState('');
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const { isLoading, error, data, refetch } = useQuery({
     queryKey: ['users', currentPage],
@@ -52,7 +64,7 @@ const UserListPage = () => {
         toast({
           title: 'Success',
           description: 'User deleted successfully',
-          className: 'bg-gray-800 text-white',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
           duration: 3000,
         });
         const deleteUserSound = new Audio('/assets/sounds/success.mp3');
@@ -119,28 +131,85 @@ const UserListPage = () => {
 
   const renderPagination = () => {
     const totalPages = data?.totalPages || 1;
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(i);
+    }
 
     return (
-      <div className="flex justify-center mt-4 space-x-2">
+      <div className="flex justify-center items-center mt-4 space-x-2">
         <Button
           variant="outline"
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
+          className="w-8 h-8 p-0"
         >
-          Previous
+          <ChevronLeft className="h-4 w-4" />
         </Button>
-        <span className="py-2 px-4 border rounded">
-          Page {currentPage} of {totalPages}
-        </span>
+
+        {pageNumbers.map((number) => (
+          <Button
+            key={number}
+            variant={number === currentPage ? 'default' : 'outline'}
+            onClick={() => setCurrentPage(number)}
+            className={`w-8 h-8 p-0 ${
+              number === currentPage ? 'bg-primary text-primary-foreground' : ''
+            }`}
+          >
+            {number}
+          </Button>
+        ))}
+
         <Button
           variant="outline"
           onClick={() =>
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
           }
           disabled={currentPage === totalPages}
+          className="w-8 h-8 p-0"
         >
-          Next
+          <ChevronRight className="h-4 w-4" />
         </Button>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            const pageNumber = parseInt(goToPage, 10);
+            if (pageNumber >= 1 && pageNumber <= totalPages) {
+              setCurrentPage(pageNumber);
+              setGoToPage('');
+            } else {
+              toast({
+                title: 'Invalid Page',
+                description: `Please enter a page number between 1 and ${totalPages}`,
+                variant: 'destructive',
+                duration: 3000,
+              });
+            }
+          }}
+          className="flex items-center space-x-2"
+        >
+          <Input
+            type="number"
+            placeholder="Go to page"
+            value={goToPage}
+            onChange={(e) => setGoToPage(e.target.value)}
+            className="w-32 h-8 text-xs"
+            min="1"
+            max={totalPages}
+          />
+          <Button type="submit" variant="outline" className="h-8 text-xs">
+            Go
+          </Button>
+        </form>
       </div>
     );
   };

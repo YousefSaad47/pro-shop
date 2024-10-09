@@ -1,7 +1,7 @@
-import React from "react";
-import { motion } from "framer-motion";
-import Product from "../components/Product";
-import { TrendingUp } from "lucide-react";
+import React from 'react';
+import { motion } from 'framer-motion';
+import Product from '../components/Product';
+import { TrendingUp } from 'lucide-react';
 
 const TrendingSection = ({ products }) => {
   const trendingProducts = products

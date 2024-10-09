@@ -1,10 +1,10 @@
-import React from "react";
-import { User, Truck, CreditCard, CheckCircle } from "lucide-react";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { useToast } from "@/hooks/use-toast";
-import { Toaster } from "@/components/ui/toaster";
+import React from 'react';
+import { User, Truck, CreditCard, CheckCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useToast } from '@/hooks/use-toast';
+import { Toaster } from '@/components/ui/toaster';
 
 const CheckoutSteps = ({ currentStep }) => {
   const navigate = useNavigate();
@@ -12,27 +12,27 @@ const CheckoutSteps = ({ currentStep }) => {
   const { toast } = useToast();
 
   const steps = [
-    { number: 1, title: "Sign In", icon: User, route: "/login" },
-    { number: 2, title: "Shipping", icon: Truck, route: "/shipping" },
-    { number: 3, title: "Payment", icon: CreditCard, route: "/payment" },
+    { number: 1, title: 'Sign In', icon: User, route: '/login' },
+    { number: 2, title: 'Shipping', icon: Truck, route: '/shipping' },
+    { number: 3, title: 'Payment', icon: CreditCard, route: '/payment' },
     {
       number: 4,
-      title: "Place Order",
+      title: 'Place Order',
       icon: CheckCircle,
-      route: "/placeorder",
+      route: '/placeorder',
     },
   ];
 
   const handleStepClick = (step) => {
     if (step.number === 1 && userInfo) {
       toast({
-        title: "Already Signed In",
-        description: "You are already logged into your account.",
+        title: 'Already Signed In',
+        description: 'You are already logged into your account.',
         duration: 5000,
         style: {
-          backgroundColor: "#333",
-          color: "#fff",
-          border: "1px solid #444",
+          backgroundColor: '#333',
+          color: '#fff',
+          border: '1px solid #444',
         },
       });
     } else {
@@ -56,10 +56,10 @@ const CheckoutSteps = ({ currentStep }) => {
                 className={`w-16 h-16 rounded-full flex items-center justify-center cursor-pointer
                   ${
                     step.number <= currentStep
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-100 text-gray-400"
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-gray-100 text-gray-400'
                   }
-                  ${step.number === currentStep ? "ring-4 ring-blue-300" : ""}
+                  ${step.number === currentStep ? 'ring-4 ring-blue-300' : ''}
                   transition-all duration-300 ease-in-out hover:shadow-lg`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
@@ -70,8 +70,8 @@ const CheckoutSteps = ({ currentStep }) => {
                 className={`mt-4 text-sm font-semibold
                   ${
                     step.number <= currentStep
-                      ? "text-blue-600"
-                      : "text-gray-500"
+                      ? 'text-blue-600'
+                      : 'text-gray-500'
                   }`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -84,9 +84,9 @@ const CheckoutSteps = ({ currentStep }) => {
               <div className="flex-1 h-0.5 bg-gray-200 relative">
                 <motion.div
                   className="absolute top-0 left-0 h-full bg-blue-500"
-                  initial={{ width: "0%" }}
+                  initial={{ width: '0%' }}
                   animate={{
-                    width: step.number < currentStep ? "100%" : "0%",
+                    width: step.number < currentStep ? '100%' : '0%',
                   }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                 />

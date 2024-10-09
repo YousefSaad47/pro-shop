@@ -38,7 +38,7 @@ const Product = ({ product }) => {
           title: 'Removed from Cart',
           description: `${product.name} has been removed from your cart.`,
           duration: 5000,
-          className: 'bg-gray-800 text-white',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
         });
         const removeFromCartSound = new Audio('/assets/sounds/pop.mp3');
         removeFromCartSound.play();
@@ -49,7 +49,7 @@ const Product = ({ product }) => {
           title: 'Added to Cart',
           description: `${product.name} has been added to your cart.`,
           duration: 5000,
-          className: 'bg-gray-800 text-white',
+          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
         });
         const addToCartSound = new Audio('/assets/sounds/success.mp3');
         addToCartSound.play();
