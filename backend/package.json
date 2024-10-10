@@ -5,13 +5,10 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "node backend/server.js",
-    "server": "nodemon backend/server.js",
-    "client": "npm run dev --prefix frontend",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "data:import": "node backend/seeder.js -i",
-    "data:destroy": "node backend/seeder.js -d",
-    "build": "npm install && npm install --prefix frontend && npm run build --prefix frontend"
+    "start": "node server.js",
+    "server": "nodemon server.js",
+    "data:import": "node seeder.js -i",
+    "data:destroy": "node seeder.js -d"
   },
   "keywords": [],
   "author": "",
@@ -27,7 +24,6 @@
     "stripe": "^17.0.0"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0",
     "dotenv": "^16.4.5",
     "nodemon": "^3.1.4"
   }

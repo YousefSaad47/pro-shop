@@ -20,7 +20,7 @@ const app = express();
 app.use('/api', paymentRoutes);
 
 const __dirname = path.resolve();
-app.use('/assets', express.static(`${__dirname}/backend/public`));
+app.use('/assets', express.static(`${__dirname}/public`));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,7 +32,14 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/upload', uploadRoutes);
 
-app.use(notFound);
 app.use(errorHandler);
+
+app.use(express.static(path.join(__dirname, '/public/web')));
+
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '/public/web/index.html'));
+});
+
+app.use(notFound);
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
