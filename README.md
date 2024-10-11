@@ -33,17 +33,22 @@ https://github.com/user-attachments/assets/efd06cd6-3185-49d8-964c-202b9826810a
     <tr>
       <td align="center"><img width="100%" src="images/payment.png" alt="Application Image 10"></td>
       <td align="center"><img width="100%" src="images/place-order.png" alt="Application Image 11"></td>
-      <td align="center"><img width="100%" src="images/paypal.png" alt="Application Image 12"></td>
+      <td align="center"><img width="100%" src="images/stripe.png" alt="Application Image 12"></td>
     </tr>
     <tr>
-      <td align="center"><img width="100%" src="images/profile.png" alt="Application Image 13"></td>
-      <td align="center"><img width="100%" src="images/orders-admin.png" alt="Application Image 14"></td>
-      <td align="center"><img width="100%" src="images/users-admin.png" alt="Application Image 15"></td>
+      <td align="center"><img width="100%" src="images/profile1.png" alt="Application Image 13"></td>
+      <td align="center"><img width="100%" src="images/profile2.png" alt="Application Image 14"></td>
+      <td align="center"><img width="100%" src="images/pagination.png" alt="Application Image 15"></td>
     </tr>
     <tr>
-      <td align="center"><img width="100%" src="images/add-product.png" alt="Application Image 13"></td>
-      <td align="center"><img width="100%" src="images/edit-user.png" alt="Application Image 14"></td>
-      <td align="center"><img width="100%" src="images/products-admin.png" alt="Application Image 15"></td>
+      <td align="center"><img width="100%" src="images/footer.png" alt="Application Image 16"></td>
+      <td align="center"><img width="100%" src="images/orders-admin.png" alt="Application Image 17"></td>
+      <td align="center"><img width="100%" src="images/users-admin.png" alt="Application Image 18"></td>
+    </tr>
+    <tr>
+      <td align="center"><img width="100%" src="images/add-product.png" alt="Application Image 19"></td>
+      <td align="center"><img width="100%" src="images/edit-user.png" alt="Application Image 20"></td>
+      <td align="center"><img width="100%" src="images/products-admin.png" alt="Application Image 21"></td>
     </tr>
   </tbody>
 </table>
@@ -65,28 +70,31 @@ JWT_SECRET=<your_jwt_secret>
 STRIPE_SECRET_KEY=<your_stripe_secret>
 STRIPE_PUBLISHABLE_KEY=<your_stripe_publishable_key>
 STRIPE_WEBHOOK_SECRET=<your_stripe_webhook_secret>
-
 ```
-
-Change the JWT_SECRET and PAGINATION_LIMIT to what you want
 
 ### Install Dependencies (frontend & backend)
 
 ```
+cd backend/
 npm install
-cd frontend
+cd frontend/
 npm install
 ```
 
 ### Run
 
 ```
-
-# Run frontend (:3000) & backend (:5000)
-npm run dev
-
-# Run backend only
+# Run frontend (:5173) & backend (:3000)
+cd backend/
 npm run server
+cd frontend/
+npm run dev
+# Run backend only
+cd backend/
+npm run server
+# Run frontend only
+cd frontend/
+npm run dev
 ```
 
 ### Seed Database
@@ -96,20 +104,19 @@ You can use the following commands to seed the database with some sample users a
 ```
 # Import data
 npm run data:import
-
 # Destroy data
 npm run data:destroy
 ```
 
-```
-Sample User Logins
+### Sample User Logins
 
+```
 admin@email.com (Admin)
 123456
 
-yousef@email.com (Customer)
+john@email.com (Customer)
 123456
 
-mohamed@email.com (Customer)
+jane@email.com (Customer)
 123456
 ```
