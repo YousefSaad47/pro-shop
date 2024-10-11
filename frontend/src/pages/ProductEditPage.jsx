@@ -86,7 +86,7 @@ const ProductEditPage = () => {
       toast({
         title: 'Success',
         description: 'Product image uploaded successfully',
-        className: 'bg-gray-800 text-white',
+        className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
         duration: 3000,
       });
       const updateProductSound = new Audio('/assets/sounds/success.mp3');
