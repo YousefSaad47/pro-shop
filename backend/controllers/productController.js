@@ -25,7 +25,9 @@ const getProducts = asyncHandler(async (req, res) => {
     .limit(limit)
     .skip(skip);
 
-  const featuredProducts = await Product.find({}).sort({ rating: -1 }).limit(4);
+  const featuredProducts = await Product.find({})
+    .sort({ rating: -1 })
+    .limit(10);
 
   const trendingProducts = await Product.find({ rating: { $gte: 4 } })
     .sort({ createdAt: -1 })

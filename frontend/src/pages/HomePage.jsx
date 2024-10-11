@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import Product from '../components/Product';
@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const HomePage = () => {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const categories = ['All', 'Electronics', 'Beauty', 'Home'];
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,19 +44,24 @@ const HomePage = () => {
     cacheTime: 5 * 60 * 1000,
   });
 
-  const categories = ['All', 'Electronics', 'Beauty', 'Home'];
-
   useEffect(() => {
     setCurrentPage(1);
-    refetch();
-  }, [selectedCategory, searchTerm, refetch]);
+  }, [selectedCategory, searchTerm]);
 
   useEffect(() => {
-    window.scrollTo({
-      top: document.getElementById('products-section')?.offsetTop,
-      behavior: 'smooth',
-    });
+    const productsSection = document.getElementById('products-section');
+    if (productsSection && currentPage > 1) {
+      window.scrollTo({
+        top: productsSection.offsetTop,
+        behavior: 'smooth',
+      });
+    }
   }, [currentPage]);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    refetch();
+  };
 
   const getPageNumbers = () => {
     if (!productsData) return [];
@@ -99,14 +105,11 @@ const HomePage = () => {
 
   const handleGoToPage = () => {
     const pageNumber = parseInt(inputPage, 10);
-    if (pageNumber >= 1 && pageNumber <= productsData.totalPages) {
+    if (pageNumber >= 1 && pageNumber <= productsData?.totalPages) {
       setCurrentPage(pageNumber);
       setInputPage('');
     }
   };
-
-  if (isLoading) return <LoadingSkeleton />;
-  if (isError) return <ErrorMessage />;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 bg-gradient-to-b from-gray-100 to-white">
@@ -117,10 +120,10 @@ const HomePage = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <FeaturedSection products={productsData.featuredProducts} />
+        <FeaturedSection products={productsData?.featuredProducts} />
       </motion.div>
 
-      <Tabs defaultValue="all" className="mt-24" id="products-section">
+      <Tabs value={selectedCategory} className="mt-24" id="products-section">
         <motion.h2
           className="text-6xl font-extrabold mb-12 text-center text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-teal-500"
           initial={{ opacity: 0, y: -20 }}
@@ -135,9 +138,9 @@ const HomePage = () => {
             {categories.map((category) => (
               <TabsTrigger
                 key={category}
-                value={category.toLowerCase()}
-                onClick={() => setSelectedCategory(category)}
-                className="capitalize px-8 py-3 text-lg font-medium rounded-full transition-all duration-300 text-white hover:bg-white hover:text-indigo-600"
+                value={category}
+                onClick={() => handleCategoryChange(category)}
+                className="px-8 py-3 text-lg font-medium rounded-full transition-all duration-300 text-white hover:bg-white hover:text-indigo-600"
               >
                 {category}
               </TabsTrigger>
@@ -145,7 +148,7 @@ const HomePage = () => {
           </TabsList>
 
           <div className="relative group">
-            <input
+            <Input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
@@ -165,19 +168,30 @@ const HomePage = () => {
         <AnimatePresence mode="wait">
           <motion.div
             key={`${selectedCategory}-${searchTerm}-${currentPage}`}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
           >
-            {productsData.products.map((product) => (
-              <Product key={product._id} product={product} />
-            ))}
+            {isLoading ? (
+              <LoadingSkeleton />
+            ) : isError ? (
+              <ErrorMessage />
+            ) : productsData?.products?.length === 0 ? (
+              <div className="text-center text-gray-500 py-8">
+                No products found
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {productsData?.products?.map((product) => (
+                  <Product key={product._id} product={product} />
+                ))}
+              </div>
+            )}
           </motion.div>
         </AnimatePresence>
 
-        {productsData.totalPages > 1 && (
+        {productsData && productsData.totalPages > 1 && (
           <motion.div
             className="flex flex-col sm:flex-row justify-center items-center mt-12 space-y-4 sm:space-y-0 sm:space-x-4"
             initial={{ opacity: 0 }}
@@ -230,7 +244,7 @@ const HomePage = () => {
                 onKeyDown={handleInputKeyDown}
                 className="w-32 text-center"
                 min={1}
-                max={productsData.totalPages}
+                max={productsData?.totalPages}
               />
               <Button
                 onClick={handleGoToPage}
@@ -239,7 +253,7 @@ const HomePage = () => {
                 disabled={
                   !inputPage ||
                   parseInt(inputPage, 10) < 1 ||
-                  parseInt(inputPage, 10) > productsData.totalPages
+                  parseInt(inputPage, 10) > productsData?.totalPages
                 }
               >
                 Go
@@ -249,7 +263,7 @@ const HomePage = () => {
         )}
       </Tabs>
 
-      <TrendingSection products={productsData.trendingProducts} />
+      <TrendingSection products={productsData?.trendingProducts} />
     </div>
   );
 };
