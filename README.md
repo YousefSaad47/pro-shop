@@ -64,7 +64,7 @@ Rename the `.env.example` file to `.env` and add the following
 
 ```
 NOVE_END=development
-PORT=5000
+PORT=3000
 MONGO_CONNECTION=<your_mongo_connection>
 JWT_SECRET=<your_jwt_secret>
 STRIPE_SECRET_KEY=<your_stripe_secret>
