@@ -64,7 +64,7 @@ Rename the `.env.example` file to `.env` and add the following
 
 ```
 NOVE_END=development
-PORT=3000
+PORT=8080
 MONGO_CONNECTION=<your_mongo_connection>
 JWT_SECRET=<your_jwt_secret>
 STRIPE_SECRET_KEY=<your_stripe_secret>
@@ -84,7 +84,7 @@ npm install
 ### Run
 
 ```
-# Run frontend (:5173) & backend (:3000)
+# Run frontend (:5173) & backend (:8080)
 cd backend/
 npm run server
 cd frontend/

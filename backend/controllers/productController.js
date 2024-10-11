@@ -6,6 +6,11 @@ const getProducts = asyncHandler(async (req, res) => {
   const limit = parseInt(req.query.limit) || 12;
   const category = req.query.category;
   const search = req.query.search;
+  const minPrice = parseFloat(req.query.minPrice) || 0;
+  const maxPrice = parseFloat(req.query.maxPrice) || Infinity;
+  const ratings = req.query.ratings
+    ? req.query.ratings.split(',').map(Number)
+    : [];
 
   const skip = (page - 1) * limit;
 
@@ -15,6 +20,10 @@ const getProducts = asyncHandler(async (req, res) => {
   }
   if (search) {
     query.name = { $regex: search, $options: 'i' };
+  }
+  query.price = { $gte: minPrice, $lte: maxPrice };
+  if (ratings.length > 0) {
+    query.rating = { $gte: Math.min(...ratings) };
   }
 
   const totalProducts = await Product.countDocuments(query);

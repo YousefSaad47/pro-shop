@@ -7,67 +7,22 @@ import FeaturedSection from '../components/FeaturedSection';
 import TrendingSection from '../components/TrendingSection';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 
-const HomePage = () => {
-  const categories = ['All', 'Electronics', 'Beauty', 'Home'];
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const [inputPage, setInputPage] = useState('');
 
-  const {
-    data: productsData,
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery({
-    queryKey: ['products', selectedCategory, searchTerm, currentPage],
-    queryFn: async () => {
-      const category = selectedCategory !== 'All' ? selectedCategory : '';
-      const { data } = await axios.get('/api/products', {
-        params: {
-          page: currentPage,
-          limit: 12,
-          category,
-          search: searchTerm,
-        },
-      });
-      return data;
-    },
-    staleTime: 5 * 60 * 1000,
-    cacheTime: 5 * 60 * 1000,
-  });
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [selectedCategory, searchTerm]);
-
-  useEffect(() => {
-    const productsSection = document.getElementById('products-section');
-    if (productsSection && currentPage > 1) {
-      window.scrollTo({
-        top: productsSection.offsetTop,
-        behavior: 'smooth',
-      });
-    }
-  }, [currentPage]);
-
-  const handleCategoryChange = (category) => {
-    setSelectedCategory(category);
-    refetch();
-  };
-
   const getPageNumbers = () => {
-    if (!productsData) return [];
-    const totalPages = productsData.totalPages;
     const pages = [];
-
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -85,94 +40,213 @@ const HomePage = () => {
         }
       }
     }
-
     return pages;
+  };
+
+  const handlePageInput = (e) => {
+    e.preventDefault();
+    const pageNumber = parseInt(inputPage);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber);
+      setInputPage('');
+    }
+  };
+
+  return (
+    <div className="flex items-center justify-center space-x-2 mt-8">
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage - 1)}
+        disabled={currentPage <= 1}
+      >
+        Previous
+      </Button>
+      {getPageNumbers().map((pageNum) => (
+        <Button
+          key={pageNum}
+          variant={pageNum === currentPage ? 'default' : 'outline'}
+          onClick={() => onPageChange(pageNum)}
+        >
+          {pageNum}
+        </Button>
+      ))}
+      <Button
+        variant="outline"
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={currentPage >= totalPages}
+      >
+        Next
+      </Button>
+      <form onSubmit={handlePageInput} className="flex items-center space-x-2">
+        <Input
+          type="number"
+          value={inputPage}
+          onChange={(e) => setInputPage(e.target.value)}
+          placeholder="Go to page"
+          className="w-20"
+        />
+        <Button type="submit">Go</Button>
+      </form>
+    </div>
+  );
+};
+
+const HomePage = () => {
+  const categories = ['All', 'Electronics', 'Home', 'Beauty'];
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [priceRange, setPriceRange] = useState('0-Infinity');
+  const [tempSearchTerm, setTempSearchTerm] = useState('');
+
+  const {
+    data: productsData,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      'products',
+      selectedCategory,
+      searchTerm,
+      currentPage,
+      priceRange,
+    ],
+    queryFn: async () => {
+      const category = selectedCategory !== 'All' ? selectedCategory : '';
+      const [minPrice, maxPrice] = priceRange.split('-');
+      const { data } = await axios.get('/api/products', {
+        params: {
+          page: currentPage,
+          limit: 6,
+          category,
+          search: searchTerm,
+          minPrice,
+          maxPrice: maxPrice === 'Infinity' ? undefined : maxPrice,
+        },
+      });
+      return data;
+    },
+    staleTime: 5 * 60 * 1000,
+    cacheTime: 5 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchTerm, priceRange]);
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const handlePriceRangeChange = (range) => {
+    setPriceRange(range);
   };
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  const handleInputChange = (e) => {
-    setInputPage(e.target.value);
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setSearchTerm(tempSearchTerm);
   };
 
-  const handleInputKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      handleGoToPage();
-    }
-  };
+  const FilterSection = ({ isMobile = false }) => (
+    <div className={`${isMobile ? 'px-4' : 'pr-8'} space-y-6`}>
+      <div>
+        <h3 className="text-lg font-semibold mb-3">Categories</h3>
+        <div className="space-y-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleCategoryChange(category)}
+              className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                selectedCategory === category
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'hover:bg-gray-100'
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+      </div>
 
-  const handleGoToPage = () => {
-    const pageNumber = parseInt(inputPage, 10);
-    if (pageNumber >= 1 && pageNumber <= productsData?.totalPages) {
-      setCurrentPage(pageNumber);
-      setInputPage('');
-    }
-  };
+      <div>
+        <h3 className="text-lg font-semibold mb-3">Price Range</h3>
+        <div className="space-y-2">
+          {[
+            { label: 'All Prices', value: '0-Infinity' },
+            { label: 'Below $25', value: '0-25' },
+            { label: 'Below $100', value: '0-100' },
+            { label: '$100 to $500', value: '100-500' },
+            { label: '$500 to $1000', value: '500-1000' },
+            { label: 'Over $1000', value: '1000-Infinity' },
+          ].map((range) => (
+            <button
+              key={range.value}
+              onClick={() => handlePriceRangeChange(range.value)}
+              className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+                priceRange === range.value
+                  ? 'bg-indigo-100 text-indigo-700'
+                  : 'hover:bg-gray-100'
+              }`}
+            >
+              {range.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 bg-gradient-to-b from-gray-100 to-white">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       <HeroSection />
+      <FeaturedSection products={productsData?.featuredProducts} />
 
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <FeaturedSection products={productsData?.featuredProducts} />
-      </motion.div>
+      <div className="mt-16" id="products-section">
+        <h2 className="text-3xl font-bold mb-8">Explore Our Collection</h2>
 
-      <Tabs value={selectedCategory} className="mt-24" id="products-section">
-        <motion.h2
-          className="text-6xl font-extrabold mb-12 text-center text-gray-900 bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-teal-500"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          Explore Our Collection
-        </motion.h2>
-
-        <div className="flex flex-col md:flex-row justify-between items-center mb-12 space-y-6 md:space-y-0">
-          <TabsList className="bg-gradient-to-r from-indigo-500 to-teal-500 shadow-lg rounded-full p-1.5">
-            {categories.map((category) => (
-              <TabsTrigger
-                key={category}
-                value={category}
-                onClick={() => handleCategoryChange(category)}
-                className="px-8 py-3 text-lg font-medium rounded-full transition-all duration-300 text-white hover:bg-white hover:text-indigo-600"
-              >
-                {category}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-
-          <div className="relative group">
+        <div className="mb-6 flex items-center space-x-4">
+          <form onSubmit={handleSearchSubmit} className="relative flex-grow">
             <Input
               type="text"
               placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={() => setIsSearchFocused(true)}
-              onBlur={() => setIsSearchFocused(false)}
-              className="pl-12 pr-4 py-3 w-80 border-2 border-indigo-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-md transition-all duration-300 group-hover:border-indigo-400"
+              value={tempSearchTerm}
+              onChange={(e) => setTempSearchTerm(e.target.value)}
+              className="w-full pr-10"
             />
-            <Search
-              className={`absolute left-4 top-1/2 transform -translate-y-1/2 transition-all duration-300 ${
-                isSearchFocused ? 'text-indigo-500' : 'text-gray-400'
-              } group-hover:text-indigo-500`}
-            />
-          </div>
+            <Button
+              type="submit"
+              variant="ghost"
+              className="absolute right-0 top-0 h-full"
+            >
+              <Search className="h-5 w-5" />
+            </Button>
+          </form>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="md:hidden">
+                Filters
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <SheetHeader>
+                <SheetTitle>Filters</SheetTitle>
+              </SheetHeader>
+              <FilterSection isMobile={true} />
+            </SheetContent>
+          </Sheet>
         </div>
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${selectedCategory}-${searchTerm}-${currentPage}`}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.5 }}
-          >
+        <div className="flex flex-col md:flex-row">
+          <div className="hidden md:block w-1/4">
+            <FilterSection />
+          </div>
+
+          <div className="w-full md:w-3/4">
             {isLoading ? (
               <LoadingSkeleton />
             ) : isError ? (
@@ -182,86 +256,23 @@ const HomePage = () => {
                 No products found
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {productsData?.products?.map((product) => (
                   <Product key={product._id} product={product} />
                 ))}
               </div>
             )}
-          </motion.div>
-        </AnimatePresence>
 
-        {productsData && productsData.totalPages > 1 && (
-          <motion.div
-            className="flex flex-col sm:flex-row justify-center items-center mt-12 space-y-4 sm:space-y-0 sm:space-x-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage <= 1}
-                className="flex items-center space-x-2 hover:bg-indigo-50"
-              >
-                <ChevronLeft className="h-4 w-4" />
-                <span>Previous</span>
-              </Button>
-
-              {getPageNumbers().map((pageNum) => (
-                <Button
-                  key={pageNum}
-                  variant={pageNum === currentPage ? 'default' : 'outline'}
-                  onClick={() => handlePageChange(pageNum)}
-                  className={`w-10 h-10 ${
-                    pageNum === currentPage
-                      ? 'bg-gradient-to-r from-indigo-500 to-teal-500 text-white'
-                      : 'hover:bg-indigo-50'
-                  }`}
-                >
-                  {pageNum}
-                </Button>
-              ))}
-
-              <Button
-                variant="outline"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= productsData.totalPages}
-                className="flex items-center space-x-2 hover:bg-indigo-50"
-              >
-                <span>Next</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Input
-                type="number"
-                placeholder="Go to page"
-                value={inputPage}
-                onChange={handleInputChange}
-                onKeyDown={handleInputKeyDown}
-                className="w-32 text-center"
-                min={1}
-                max={productsData?.totalPages}
+            {productsData && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={productsData.totalPages}
+                onPageChange={handlePageChange}
               />
-              <Button
-                onClick={handleGoToPage}
-                variant="outline"
-                className="hover:bg-indigo-50"
-                disabled={
-                  !inputPage ||
-                  parseInt(inputPage, 10) < 1 ||
-                  parseInt(inputPage, 10) > productsData?.totalPages
-                }
-              >
-                Go
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </Tabs>
+            )}
+          </div>
+        </div>
+      </div>
 
       <TrendingSection products={productsData?.trendingProducts} />
     </div>
