@@ -7,7 +7,7 @@ import FeaturedSection from '../components/FeaturedSection';
 import TrendingSection from '../components/TrendingSection';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import ErrorMessage from '../components/ErrorMessage';
-import { Search } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -21,28 +21,6 @@ import {
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const [inputPage, setInputPage] = useState('');
 
-  const getPageNumbers = () => {
-    const pages = [];
-    if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        pages.push(1, 2, 3, 4, 5);
-      } else if (currentPage >= totalPages - 2) {
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pages.push(i);
-        }
-      } else {
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-          pages.push(i);
-        }
-      }
-    }
-    return pages;
-  };
-
   const handlePageInput = (e) => {
     e.preventDefault();
     const pageNumber = parseInt(inputPage);
@@ -53,39 +31,39 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex items-center justify-center space-x-2 mt-8">
-      <Button
-        variant="outline"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage <= 1}
-      >
-        Previous
-      </Button>
-      {getPageNumbers().map((pageNum) => (
+    <div className="flex flex-col items-center justify-center space-y-4 mt-6">
+      <div className="flex items-center space-x-2">
         <Button
-          key={pageNum}
-          variant={pageNum === currentPage ? 'default' : 'outline'}
-          onClick={() => onPageChange(pageNum)}
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
         >
-          {pageNum}
+          <ChevronLeft className="h-4 w-4" />
         </Button>
-      ))}
-      <Button
-        variant="outline"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage >= totalPages}
-      >
-        Next
-      </Button>
+        <span className="text-sm">
+          Page {currentPage} of {totalPages}
+        </span>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+        >
+          <ChevronRight className="h-4 w-4" />
+        </Button>
+      </div>
       <form onSubmit={handlePageInput} className="flex items-center space-x-2">
         <Input
           type="number"
           value={inputPage}
           onChange={(e) => setInputPage(e.target.value)}
           placeholder="Go to page"
-          className="w-20"
+          className="w-20 text-sm"
         />
-        <Button type="submit">Go</Button>
+        <Button type="submit" size="sm">
+          Go
+        </Button>
       </form>
     </div>
   );
@@ -97,6 +75,7 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState('0-Infinity');
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   const {
     data: productsData,
@@ -136,10 +115,12 @@ const HomePage = () => {
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
+    setIsMobileFiltersOpen(false);
   };
 
   const handlePriceRangeChange = (range) => {
     setPriceRange(range);
+    setIsMobileFiltersOpen(false);
   };
 
   const handlePageChange = (newPage) => {
@@ -151,17 +132,17 @@ const HomePage = () => {
   };
 
   const FilterSection = ({ isMobile = false }) => (
-    <div className={`${isMobile ? 'px-4' : 'pr-8'} space-y-6`}>
+    <div className={`${isMobile ? 'px-2' : 'pr-2 lg:pr-4'} space-y-4`}>
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-foreground">
+        <h3 className="text-sm font-semibold mb-2 text-foreground">
           Categories
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-1">
           {categories.map((category) => (
             <button
               key={category}
               onClick={() => handleCategoryChange(category)}
-              className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+              className={`block w-full text-left px-2 py-1 rounded-md transition-colors text-xs ${
                 selectedCategory === category
                   ? 'bg-primary/10 text-primary'
                   : 'hover:bg-muted text-foreground hover:text-foreground'
@@ -174,10 +155,10 @@ const HomePage = () => {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-3 text-foreground">
+        <h3 className="text-sm font-semibold mb-2 text-foreground">
           Price Range
         </h3>
-        <div className="space-y-2">
+        <div className="space-y-1">
           {[
             { label: 'All Prices', value: '0-Infinity' },
             { label: 'Below $100', value: '0-100' },
@@ -188,7 +169,7 @@ const HomePage = () => {
             <button
               key={range.value}
               onClick={() => handlePriceRangeChange(range.value)}
-              className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
+              className={`block w-full text-left px-2 py-1 rounded-md transition-colors text-xs ${
                 priceRange === range.value
                   ? 'bg-primary/10 text-primary'
                   : 'hover:bg-muted text-foreground hover:text-foreground'
@@ -203,33 +184,36 @@ const HomePage = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="max-w-[344px] mx-auto px-2 sm:max-w-none sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
       <HeroSection />
       <FeaturedSection products={productsData?.featuredProducts} />
 
-      <div className="mt-16" id="products-section">
-        <h2 className="text-3xl font-bold mb-8 text-foreground">
+      <div className="mt-6 sm:mt-8 md:mt-12" id="products-section">
+        <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold mb-4 text-foreground">
           Explore Our Collection
         </h2>
 
-        <div className="mb-6 flex items-center space-x-4">
-          <div className="relative flex-grow">
+        <div className="mb-4 flex flex-col space-y-2">
+          <div className="relative w-full">
             <Input
               type="text"
               placeholder="Search products..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full pr-10"
+              className="w-full pr-8 text-sm"
             />
-            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute right-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <Sheet>
+          <Sheet
+            open={isMobileFiltersOpen}
+            onOpenChange={setIsMobileFiltersOpen}
+          >
             <SheetTrigger asChild>
-              <Button variant="outline" className="md:hidden">
+              <Button variant="outline" size="sm" className="w-full">
                 Filters
               </Button>
             </SheetTrigger>
-            <SheetContent side="left">
+            <SheetContent side="left" className="w-[250px] sm:w-[300px]">
               <SheetHeader>
                 <SheetTitle>Filters</SheetTitle>
               </SheetHeader>
@@ -238,22 +222,22 @@ const HomePage = () => {
           </Sheet>
         </div>
 
-        <div className="flex flex-col md:flex-row">
-          <div className="hidden md:block w-1/4">
+        <div className="flex flex-col lg:flex-row">
+          <div className="hidden lg:block w-1/4">
             <FilterSection />
           </div>
 
-          <div className="w-full md:w-3/4">
+          <div className="w-full lg:w-3/4">
             {isLoading ? (
               <LoadingSkeleton />
             ) : isError ? (
               <ErrorMessage />
             ) : productsData?.products?.length === 0 ? (
-              <div className="text-center text-muted-foreground py-8">
+              <div className="text-center text-muted-foreground py-4 text-sm">
                 No products found
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {productsData?.products?.map((product) => (
                   <Product key={product._id} product={product} />
                 ))}

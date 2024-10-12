@@ -37,7 +37,7 @@ const CheckoutSteps = ({ currentStep }) => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-12 px-4">
+    <div className="w-full max-w-4xl mx-auto my-4 px-2 sm:my-8 sm:px-4">
       <div className="relative flex items-center justify-between">
         {steps.map((step, index) => (
           <React.Fragment key={step.number}>
@@ -49,21 +49,25 @@ const CheckoutSteps = ({ currentStep }) => {
               onClick={() => handleStepClick(step)}
             >
               <motion.div
-                className={`w-16 h-16 rounded-full flex items-center justify-center cursor-pointer
+                className={`w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center cursor-pointer
                   ${
                     step.number <= currentStep
                       ? 'bg-blue-500 text-white'
                       : 'bg-gray-100 text-gray-400'
                   }
-                  ${step.number === currentStep ? 'ring-4 ring-blue-300' : ''}
+                  ${
+                    step.number === currentStep
+                      ? 'ring-2 sm:ring-4 ring-blue-300'
+                      : ''
+                  }
                   transition-all duration-300 ease-in-out hover:shadow-lg`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <step.icon size={24} />
+                <step.icon size={12} className="sm:w-4 sm:h-4 md:w-6 md:h-6" />
               </motion.div>
               <motion.p
-                className={`mt-4 text-sm font-semibold
+                className={`mt-1 sm:mt-2 text-[0.6rem] sm:text-xs md:text-sm font-semibold text-center
                   ${
                     step.number <= currentStep
                       ? 'text-blue-600'
@@ -77,7 +81,7 @@ const CheckoutSteps = ({ currentStep }) => {
               </motion.p>
             </motion.div>
             {index < steps.length - 1 && (
-              <div className="flex-1 h-0.5 bg-gray-200 relative">
+              <div className="flex-1 h-0.5 bg-gray-200 relative mx-1 sm:mx-2">
                 <motion.div
                   className="absolute top-0 left-0 h-full bg-blue-500"
                   initial={{ width: '0%' }}

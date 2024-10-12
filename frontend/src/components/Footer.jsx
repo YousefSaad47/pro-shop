@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
   Facebook,
@@ -25,7 +26,7 @@ const Footer = () => {
 
   const navItems = [
     { name: 'Home', path: '/', icon: Globe },
-    { name: 'Products', path: '/products', icon: Star },
+    { name: 'Products', path: '/', icon: Star },
     { name: 'Shipping', path: '/shipping', icon: Zap },
   ];
 
@@ -39,31 +40,31 @@ const Footer = () => {
     {
       icon: ShoppingCart,
       title: 'Vast Selection',
-      description: 'Over 1 million products',
+      description: 'Over 1M products',
       stat: '1M+',
     },
     {
       icon: Truck,
       title: 'Fast Delivery',
-      description: 'Same-day delivery available',
+      description: 'Same-day available',
       stat: '24h',
     },
     {
       icon: Shield,
       title: 'Secure Shopping',
-      description: '100% safe transactions',
+      description: '100% safe',
       stat: '100%',
     },
     {
       icon: Users,
       title: 'Happy Customers',
-      description: 'Millions of satisfied users',
+      description: 'Millions satisfied',
       stat: '5M+',
     },
     {
       icon: Clock,
       title: '24/7 Support',
-      description: 'Always here to help',
+      description: 'Always here',
       stat: '24/7',
     },
   ];
@@ -98,22 +99,22 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-black via-indigo-900 to-gray-900 text-gray-300 overflow-hidden py-16">
+    <footer className="relative bg-gradient-to-b from-black via-indigo-900 to-gray-900 text-gray-300 overflow-hidden py-8 px-4">
       <div className="absolute inset-0">
         <AnimatePresence>
-          {[...Array(50)].map((_, i) => (
+          {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
               className="absolute bg-blue-500 rounded-full opacity-20"
               initial={{
                 scale: 0,
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                x: Math.random() * 100,
+                y: Math.random() * 100,
               }}
               animate={{
                 scale: Math.random() * 1.5 + 0.5,
-                x: Math.random() * window.innerWidth,
-                y: Math.random() * window.innerHeight,
+                x: Math.random() * 100,
+                y: Math.random() * 100,
                 opacity: Math.random() * 0.5,
               }}
               transition={{
@@ -122,8 +123,8 @@ const Footer = () => {
                 repeatType: 'reverse',
               }}
               style={{
-                width: `${Math.random() * 6 + 2}px`,
-                height: `${Math.random() * 6 + 2}px`,
+                width: `${Math.random() * 4 + 2}px`,
+                height: `${Math.random() * 4 + 2}px`,
               }}
             />
           ))}
@@ -136,76 +137,78 @@ const Footer = () => {
             id="circuit"
             x="0"
             y="0"
-            width="100"
-            height="100"
+            width="50"
+            height="50"
             patternUnits="userSpaceOnUse"
           >
             <path
-              d="M10 10 L90 10 M10 50 L90 50 M10 90 L90 90 M50 10 L50 90"
+              d="M5 5 L45 5 M5 25 L45 25 M5 45 L45 45 M25 5 L25 45"
               stroke="currentColor"
               strokeWidth="0.5"
               fill="none"
             />
-            <circle cx="10" cy="10" r="2" fill="currentColor" />
-            <circle cx="90" cy="10" r="2" fill="currentColor" />
-            <circle cx="10" cy="90" r="2" fill="currentColor" />
-            <circle cx="90" cy="90" r="2" fill="currentColor" />
-            <circle cx="50" cy="50" r="3" fill="currentColor" />
+            <circle cx="5" cy="5" r="1" fill="currentColor" />
+            <circle cx="45" cy="5" r="1" fill="currentColor" />
+            <circle cx="5" cy="45" r="1" fill="currentColor" />
+            <circle cx="45" cy="45" r="1" fill="currentColor" />
+            <circle cx="25" cy="25" r="1.5" fill="currentColor" />
           </pattern>
           <rect width="100%" height="100%" fill="url(#circuit)" />
         </svg>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-10 md:px-20 relative z-10">
         <motion.div
-          className="flex flex-col md:flex-row justify-between items-center mb-12"
+          className="flex flex-col items-center mb-8"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <div className="mb-8 md:mb-0 text-center md:text-left">
+          <div className="mb-6 text-center">
             <h2
-              className={`text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2 relative group ${
+              className={`text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mb-2 relative group ${
                 glitchEffect ? 'animate-pulse' : ''
               }`}
             >
               {glitchText('ProShop')}
               <Star
-                className="absolute -top-4 -left-4 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                size={24}
+                className="absolute -top-2 -left-2 text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                size={16}
               />
               <Cpu
-                className="absolute -bottom-4 -right-4 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                size={24}
+                className="absolute -bottom-2 -right-2 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                size={16}
               />
             </h2>
-            <p className="text-gray-400 italic text-lg">
+            <p className="text-gray-400 italic text-sm">
               The Future of E-commerce
             </p>
           </div>
-          <nav>
-            <ul className="flex flex-wrap justify-center md:justify-end space-x-8">
+          <nav className="w-full">
+            <ul className="flex justify-center items-center space-x-4">
               {navItems.map((item, index) => (
                 <li key={index}>
-                  <Button
-                    variant="ghost"
-                    className="relative text-lg font-semibold hover:text-cyan-400 transition duration-300 group flex items-center"
-                    onMouseEnter={() => setHoverIndex(index)}
-                    onMouseLeave={() => setHoverIndex(null)}
-                  >
-                    <item.icon
-                      size={20}
-                      className="mr-2 transition-transform duration-300 group-hover:rotate-180"
-                    />
-                    {item.name}
-                    <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyan-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
-                    {hoverIndex === index && (
-                      <Zap
+                  <Link to={item.path}>
+                    <Button
+                      variant="ghost"
+                      className="relative text-sm font-semibold hover:text-cyan-400 transition duration-300 group flex items-center"
+                      onMouseEnter={() => setHoverIndex(index)}
+                      onMouseLeave={() => setHoverIndex(null)}
+                    >
+                      <item.icon
                         size={16}
-                        className="absolute -top-4 left-1/2 transform -translate-x-1/2 text-cyan-400 animate-ping"
+                        className="mr-1 transition-transform duration-300 group-hover:rotate-180"
                       />
-                    )}
-                  </Button>
+                      {item.name}
+                      <span className="absolute -bottom-1 left-0 w-full h-0.5 bg-cyan-400 transform scale-x-0 transition-transform duration-300 origin-left group-hover:scale-x-100"></span>
+                      {hoverIndex === index && (
+                        <Zap
+                          size={12}
+                          className="absolute -top-2 left-1/2 transform -translate-x-1/2 text-cyan-400 animate-ping"
+                        />
+                      )}
+                    </Button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -213,37 +216,39 @@ const Footer = () => {
         </motion.div>
 
         <motion.div
-          className="mb-12 bg-gray-800 bg-opacity-50 rounded-lg p-8 shadow-lg"
+          className="mb-8 bg-gray-800 bg-opacity-50 rounded-lg p-4 shadow-lg"
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.5 }}
         >
-          <h3 className="text-3xl font-bold text-center mb-8 text-cyan-400">
-            Why ProShop is the Best in E-commerce
+          <h3 className="text-xl font-bold text-center mb-4 text-cyan-400">
+            Why Choose ProShop
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-2">
             {ecommerceFeatures.map((feature, index) => (
               <motion.div
                 key={index}
-                className="bg-gray-700 bg-opacity-50 rounded-lg p-4 text-center"
+                className="bg-gray-700 bg-opacity-50 rounded-lg p-2 text-center"
                 animate={{
-                  scale: index === activeFeature ? 1.1 : 1,
+                  scale: index === activeFeature ? 1.05 : 1,
                   boxShadow:
                     index === activeFeature
-                      ? '0 10px 20px rgba(0, 0, 0, 0.2)'
+                      ? '0 5px 10px rgba(0, 0, 0, 0.2)'
                       : 'none',
                 }}
                 transition={{ duration: 0.3 }}
               >
                 <feature.icon
-                  size={40}
-                  className="mx-auto mb-2 text-cyan-400"
+                  size={24}
+                  className="mx-auto mb-1 text-cyan-400"
                 />
-                <h4 className="text-xl font-semibold mb-1">{feature.title}</h4>
-                <p className="text-sm text-gray-400 mb-2">
+                <h4 className="text-sm font-semibold mb-0.5">
+                  {feature.title}
+                </h4>
+                <p className="text-xs text-gray-400 mb-1">
                   {feature.description}
                 </p>
-                <span className="text-2xl font-bold text-cyan-400">
+                <span className="text-lg font-bold text-cyan-400">
                   {feature.stat}
                 </span>
               </motion.div>
@@ -252,7 +257,7 @@ const Footer = () => {
         </motion.div>
 
         <motion.div
-          className="flex justify-center space-x-8 mb-12"
+          className="flex justify-center space-x-4 mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 1 }}
@@ -261,10 +266,10 @@ const Footer = () => {
             <Button
               key={index}
               variant="ghost"
-              className="relative group p-2 hover:bg-gray-700"
+              className="relative group p-1.5 hover:bg-gray-700"
             >
               <Icon
-                size={32}
+                size={24}
                 className="text-gray-400 group-hover:text-gray-100 transition-colors duration-300"
               />
               <span
@@ -282,15 +287,15 @@ const Footer = () => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5, delay: 1.5 }}
         >
-          <p className="text-sm text-gray-400 mb-4">
+          <p className="text-xs text-gray-400 mb-2">
             &copy; {currentYear} ProShop. All rights reserved.
           </p>
-          <div className="flex justify-center space-x-4 mb-4">
-            <Star className="animate-pulse text-yellow-400" size={24} />
-            <Zap className="animate-bounce text-cyan-400" size={24} />
+          <div className="flex justify-center space-x-2 mb-2">
+            <Star className="animate-pulse text-yellow-400" size={16} />
+            <Zap className="animate-bounce text-cyan-400" size={16} />
             <Star
               className="animate-pulse text-yellow-400"
-              size={24}
+              size={16}
               style={{ animationDelay: '150ms' }}
             />
           </div>
@@ -298,13 +303,13 @@ const Footer = () => {
       </div>
 
       <Zap
-        size={50}
-        className="absolute bottom-16 left-16 text-cyan-400 animate-pulse"
+        size={32}
+        className="absolute bottom-8 left-8 text-cyan-400 animate-pulse"
         style={{ animationDuration: '3s' }}
       />
       <CircuitBoard
-        size={50}
-        className="absolute top-16 right-16 text-cyan-400 animate-spin"
+        size={32}
+        className="absolute top-8 right-8 text-cyan-400 animate-spin"
         style={{ animationDuration: '10s' }}
       />
     </footer>

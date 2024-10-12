@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import {
@@ -14,7 +14,6 @@ import {
   ShoppingCart,
   Truck,
   CreditCard,
-  ArrowLeft,
   Package,
   DollarSign,
 } from 'lucide-react';
@@ -76,10 +75,7 @@ const CheckoutForm = ({ onSuccess }) => {
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
-      <Button
-        className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white dark:bg-blue-500 dark:hover:bg-blue-600"
-        disabled={!stripe || isProcessing}
-      >
+      <Button className="w-full mt-4" disabled={!stripe || isProcessing}>
         {isProcessing ? (
           <span className="flex items-center">
             <FaSpinner className="animate-spin mr-2" />
@@ -166,10 +162,9 @@ const OrderPage = () => {
 
   const handlePaymentSuccess = async () => {
     try {
-      await axios.put(`/api/orders/${order._id}/pay`);
-      refetch();
       toast.success('Payment successful!');
       const successSound = new Audio('/assets/sounds/success.mp3');
+      setTimeout(() => refetch(), 1000);
       successSound.play();
     } catch (error) {
       toast.error(error?.response?.data?.message || error.message);
@@ -179,8 +174,8 @@ const OrderPage = () => {
   if (isLoading || isLoadingKey) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
-        <FaSpinner className="animate-spin text-5xl text-gray-400 dark:text-gray-600 mb-4" />
-        <span className="text-xl font-semibold text-gray-600 dark:text-gray-300">
+        <FaSpinner className="animate-spin text-4xl sm:text-5xl text-gray-400 dark:text-gray-600 mb-4" />
+        <span className="text-lg sm:text-xl font-semibold text-gray-600 dark:text-gray-300">
           Loading order details...
         </span>
       </div>
@@ -190,11 +185,11 @@ const OrderPage = () => {
   if (isError || isErrorKey) {
     return (
       <div className="flex flex-col justify-center items-center h-screen bg-gray-50 dark:bg-gray-900">
-        <FaExclamationTriangle className="text-6xl text-gray-400 dark:text-gray-600 mb-4" />
-        <span className="text-2xl font-bold text-gray-700 dark:text-gray-200 mb-2">
+        <FaExclamationTriangle className="text-5xl sm:text-6xl text-gray-400 dark:text-gray-600 mb-4" />
+        <span className="text-xl sm:text-2xl font-bold text-gray-700 dark:text-gray-200 mb-2">
           Oops! Something went wrong.
         </span>
-        <p className="text-gray-500 dark:text-gray-400 mb-4">
+        <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400 mb-4">
           We couldn't fetch the order details. Please try again later.
         </p>
       </div>
@@ -210,16 +205,21 @@ const OrderPage = () => {
     },
   };
 
+  const shortenOrderId = (id) => {
+    return `#${id.slice(-6)}`;
+  };
+
   return (
     <motion.div
-      className="container mx-auto px-4 py-8 max-w-6xl bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200"
+      className="container mx-auto px-4 py-6 sm:py-8 max-w-6xl bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4 md:mb-0">
-          Order #{order._id}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4 sm:mb-0">
+          Order <span className="hidden sm:inline">{order._id}</span>
+          <span className="sm:hidden">{shortenOrderId(order._id)}</span>
         </h1>
         <Badge
           className={`text-sm py-1 px-3 border ${
@@ -230,19 +230,21 @@ const OrderPage = () => {
         </Badge>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+        <div className="lg:col-span-2 space-y-6 sm:space-y-8">
           <Card className="bg-white dark:bg-gray-800 shadow-sm">
             <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-              <CardTitle className="flex items-center text-xl text-gray-800 dark:text-gray-100">
-                <Truck className="mr-2" size={24} /> Shipping Information
+              <CardTitle className="flex items-center text-lg sm:text-xl text-gray-800 dark:text-gray-100">
+                <Truck className="mr-2" size={20} /> Shipping Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-4 p-4 sm:p-6">
               <div className="flex justify-between items-center">
-                <p className="text-gray-600 dark:text-gray-300">Name:</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  Name:
+                </p>
                 {order.user?.name || (
-                  <span className="flex items-center text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center text-sm sm:text-base text-gray-500 dark:text-gray-400">
                     <UserX className="h-4 w-4 mr-1" />
                     User unavailable
                   </span>
@@ -250,9 +252,11 @@ const OrderPage = () => {
               </div>
               <Separator className="bg-gray-100 dark:bg-gray-700" />
               <div className="flex justify-between items-center">
-                <p className="text-gray-600 dark:text-gray-300">Email:</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  Email:
+                </p>
                 {order.user?.email || (
-                  <span className="flex items-center text-gray-500 dark:text-gray-400">
+                  <span className="flex items-center text-sm sm:text-base text-gray-500 dark:text-gray-400">
                     <span className="relative flex items-center mr-2">
                       <MdEmail className="h-4 w-4 text-gray-500 dark:text-gray-400" />
                       <FaTimes
@@ -269,11 +273,11 @@ const OrderPage = () => {
               </div>
               <Separator className="bg-gray-100 dark:bg-gray-700" />
               <div className="flex justify-between items-center">
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                   Delivery Status:
                 </p>
                 <Badge
-                  className={`text-xs py-1 px-2 border ${
+                  className={`text-xs sm:text-sm py-1 px-2 border ${
                     statusStyles.delivered[order.isDelivered]
                   }`}
                 >
@@ -285,22 +289,24 @@ const OrderPage = () => {
 
           <Card className="bg-white dark:bg-gray-800 shadow-sm">
             <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-              <CardTitle className="flex items-center text-xl text-gray-800 dark:text-gray-100">
-                <CreditCard className="mr-2" size={24} /> Payment Details
+              <CardTitle className="flex items-center text-lg sm:text-xl text-gray-800 dark:text-gray-100">
+                <CreditCard className="mr-2" size={20} /> Payment Details
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 p-6">
+            <CardContent className="space-y-4 p-4 sm:p-6">
               <div className="flex justify-between items-center">
-                <p className="text-gray-600 dark:text-gray-300">Method:</p>
-                <p className="font-medium">Credit Card</p>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                  Method:
+                </p>
+                <p className="text-sm sm:text-base font-medium">Credit Card</p>
               </div>
               <Separator className="bg-gray-100 dark:bg-gray-700" />
               <div className="flex justify-between items-center">
-                <p className="text-gray-600 dark:text-gray-300">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
                   Payment Status:
                 </p>
                 <Badge
-                  className={`text-xs py-1 px-2 border ${
+                  className={`text-xs sm:text-sm py-1 px-2 border ${
                     statusStyles.paid[order.status === 'paid']
                   }`}
                 >
@@ -312,13 +318,13 @@ const OrderPage = () => {
 
           <Card className="bg-white dark:bg-gray-800 shadow-sm">
             <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-              <CardTitle className="flex items-center text-xl text-gray-800 dark:text-gray-100">
-                <ShoppingCart className="mr-2" size={24} /> Order Items
+              <CardTitle className="flex items-center text-lg sm:text-xl text-gray-800 dark:text-gray-100">
+                <ShoppingCart className="mr-2" size={20} /> Order Items
               </CardTitle>
             </CardHeader>
             <CardContent className="p-0">
               {order.orderItems.length === 0 ? (
-                <p className="p-6 text-center text-gray-500 dark:text-gray-400">
+                <p className="p-4 sm:p-6 text-center text-sm sm:text-base text-gray-500 dark:text-gray-400">
                   Your order is empty
                 </p>
               ) : (
@@ -326,27 +332,27 @@ const OrderPage = () => {
                   {order.orderItems.map((item, index) => (
                     <motion.li
                       key={index}
-                      className="p-6 flex items-center justify-between"
+                      className="p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between"
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                     >
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-4 mb-2 sm:mb-0">
                         <img
                           src={`/assets${item.image}`}
                           alt={item.name}
-                          className="w-16 h-16 object-cover rounded-md"
+                          className="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-md"
                         />
                         <div>
-                          <p className="text-gray-800 dark:text-gray-200 font-medium">
+                          <p className="text-sm sm:text-base text-gray-800 dark:text-gray-200 font-medium">
                             {item.name}
                           </p>
-                          <p className="text-gray-500 dark:text-gray-400">
+                          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
                             {item.qty} x ${item.price.toFixed(2)}
                           </p>
                         </div>
                       </div>
-                      <p className="font-bold text-lg text-gray-800 dark:text-gray-200">
+                      <p className="font-bold text-base sm:text-lg text-gray-800 dark:text-gray-200">
                         ${(item.qty * item.price).toFixed(2)}
                       </p>
                     </motion.li>
@@ -360,32 +366,38 @@ const OrderPage = () => {
         <div className="lg:col-span-1 space-y-6">
           <Card className="bg-white dark:bg-gray-800 shadow-sm sticky top-8">
             <CardHeader className="border-b border-gray-100 dark:border-gray-700">
-              <CardTitle className="text-xl flex items-center text-gray-800 dark:text-gray-100">
+              <CardTitle className="text-lg sm:text-xl flex items-center text-gray-800 dark:text-gray-100">
                 <DollarSign className="mr-2" size={20} /> Order Summary
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
+            <CardContent className="p-4 sm:p-6">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-600 dark:text-gray-300">Items:</p>
-                  <p className="font-medium text-gray-800 dark:text-gray-200">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                    Items:
+                  </p>
+                  <p className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200">
                     ${order.itemsPrice.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-600 dark:text-gray-300">Shipping:</p>
-                  <p className="font-medium text-gray-800 dark:text-gray-200">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                    Shipping:
+                  </p>
+                  <p className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200">
                     ${order.shippingPrice.toFixed(2)}
                   </p>
                 </div>
                 <div className="flex justify-between items-center">
-                  <p className="text-gray-600 dark:text-gray-300">Tax:</p>
-                  <p className="font-medium text-gray-800 dark:text-gray-200">
+                  <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300">
+                    Tax:
+                  </p>
+                  <p className="text-sm sm:text-base font-medium text-gray-800 dark:text-gray-200">
                     ${order.taxPrice.toFixed(2)}
                   </p>
                 </div>
                 <Separator className="bg-gray-100 dark:bg-gray-700" />
-                <div className="flex justify-between items-center text-lg font-bold">
+                <div className="flex justify-between items-center text-base sm:text-lg font-bold">
                   <p className="text-gray-800 dark:text-gray-100">Total:</p>
                   <p className="text-gray-800 dark:text-gray-100">
                     ${order.totalPrice.toFixed(2)}
@@ -402,10 +414,10 @@ const OrderPage = () => {
                 >
                   <Card className="border border-gray-200 dark:border-gray-700">
                     <CardHeader>
-                      <CardTitle className="text-lg text-center text-gray-800 dark:text-gray-100">
+                      <CardTitle className="text-base sm:text-lg text-center text-gray-800 dark:text-gray-100">
                         Pay with Stripe
                       </CardTitle>
-                      <CardDescription className="text-center text-gray-500 dark:text-gray-400">
+                      <CardDescription className="text-xs sm:text-sm text-center text-gray-500 dark:text-gray-400">
                         Safe and secure payment
                       </CardDescription>
                     </CardHeader>
@@ -432,7 +444,7 @@ const OrderPage = () => {
                   >
                     <Card className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
                       <CardHeader>
-                        <CardTitle className="text-lg text-center text-gray-800 dark:text-gray-100">
+                        <CardTitle className="text-base sm:text-lg text-center text-gray-800 dark:text-gray-100">
                           Mark as Delivered
                         </CardTitle>
                       </CardHeader>
@@ -446,13 +458,13 @@ const OrderPage = () => {
                             <>
                               <FaSpinner
                                 className="animate-spin mr-2"
-                                size={18}
+                                size={16}
                               />
                               Processing...
                             </>
                           ) : (
                             <>
-                              <Package className="mr-2" size={18} />
+                              <Package className="mr-2" size={16} />
                               Mark Order as Delivered
                             </>
                           )}

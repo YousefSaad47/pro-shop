@@ -114,9 +114,9 @@ npm run data:destroy
 admin@email.com (Admin)
 123456
 
-john@email.com (Customer)
+yousef@email.com (Customer)
 123456
 
-jane@email.com (Customer)
+mohamed@email.com (Customer)
 123456
 ```

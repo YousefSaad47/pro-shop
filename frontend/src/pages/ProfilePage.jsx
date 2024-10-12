@@ -39,38 +39,31 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 5;
 
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const [inputPage, setInputPage] = useState('');
 
   const getPageNumbers = () => {
     const pages = [];
-
-    if (totalPages <= 5) {
+    if (totalPages <= 3) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      if (currentPage <= 3) {
-        pages.push(1, 2, 3, 4, 5);
-      } else if (currentPage >= totalPages - 2) {
-        for (let i = totalPages - 4; i <= totalPages; i++) {
-          pages.push(i);
-        }
+      if (currentPage <= 2) {
+        pages.push(1, 2, 3);
+      } else if (currentPage >= totalPages - 1) {
+        pages.push(totalPages - 2, totalPages - 1, totalPages);
       } else {
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
-          pages.push(i);
-        }
+        pages.push(currentPage - 1, currentPage, currentPage + 1);
       }
     }
-
     return pages;
   };
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setInputPage(value);
+    setInputPage(e.target.value);
   };
 
   const handleInputKeyDown = (e) => {
@@ -88,11 +81,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   };
 
   return (
-    <div className="flex justify-center items-center mt-4 space-x-2">
+    <div className="flex flex-wrap justify-center items-center mt-4 space-x-2 space-y-2">
       <Button
         variant="outline"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
+        className="w-8 h-8 p-0"
       >
         <ChevronLeft className="h-4 w-4" />
       </Button>
@@ -114,11 +108,12 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
         variant="outline"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
+        className="w-8 h-8 p-0"
       >
         <ChevronRight className="h-4 w-4" />
       </Button>
 
-      <div className="flex items-center ml-4 space-x-2">
+      <div className="flex items-center space-x-2">
         <Input
           type="number"
           min={1}
@@ -126,8 +121,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           value={inputPage}
           onChange={handleInputChange}
           onKeyDown={handleInputKeyDown}
-          placeholder="Go to page"
-          className="text-xs w-32 h-8"
+          placeholder="Go to"
+          className="text-xs w-16 h-8"
         />
         <Button
           variant="outline"
@@ -137,6 +132,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
             parseInt(inputPage, 10) < 1 ||
             parseInt(inputPage, 10) > totalPages
           }
+          className="h-8 px-2 py-0 text-xs"
         >
           Go
         </Button>
@@ -159,14 +155,14 @@ const SuccessOverlay = ({ onComplete }) => {
       className="absolute inset-0 bg-green-50/50 dark:bg-green-900/50 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center"
     >
       <motion.div
-        className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl flex items-center space-x-3"
+        className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl flex items-center space-x-3"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
-        <CheckCircle2 className="h-6 w-6 text-green-500" />
-        <span className="font-medium text-gray-700 dark:text-gray-200">
-          Profile updated successfully!
+        <CheckCircle2 className="h-5 w-5 text-green-500" />
+        <span className="font-medium text-sm text-gray-700 dark:text-gray-200">
+          Profile updated!
         </span>
       </motion.div>
     </motion.div>
@@ -316,14 +312,14 @@ const ProfilePage = () => {
         transition={{ duration: 0.5 }}
         className="flex flex-col lg:flex-row gap-8"
       >
-        <div className="lg:w-1/4">
+        <div className="lg:w-full lg:max-w-xs">
           <Card className="sticky top-8">
             <CardContent className="p-6">
               <div className="flex flex-col items-center space-y-6">
                 <div className="relative">
-                  <Avatar className="h-24 w-24 ring-4 ring-primary/10">
+                  <Avatar className="h-20 w-20 ring-4 ring-primary/10">
                     <AvatarImage src={userInfo?.avatar || ''} alt={name} />
-                    <AvatarFallback className="text-2xl bg-primary/10 text-primary">
+                    <AvatarFallback className="text-xl bg-primary/10 text-primary">
                       {name
                         .split(' ')
                         .map((n) => n[0])
@@ -337,14 +333,14 @@ const ProfilePage = () => {
                         variant="secondary"
                         className="flex items-center gap-1 px-2 py-1 bg-primary/10 text-primary border-none"
                       >
-                        <ShieldCheck className="h-3.5 w-3.5" />
+                        <ShieldCheck className="h-3 w-3" />
                         <span className="text-xs font-medium">Admin</span>
                       </Badge>
                     </div>
                   )}
                 </div>
                 <div className="text-center space-y-1.5">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
                     {name}
                     {userInfo?.isAdmin && (
                       <span className="text-sm text-primary">
@@ -371,9 +367,9 @@ const ProfilePage = () => {
           </Card>
         </div>
 
-        <div className="lg:w-3/4">
+        <div className="lg:flex-1">
           <Tabs defaultValue="profile" className="space-y-8">
-            <TabsList className="w-full justify-start border-b pb-px mb-4">
+            <TabsList className="w-full justify-start border-b pb-px mb-4 overflow-x-auto flex-nowrap">
               <TabsTrigger value="profile" className="relative">
                 Profile Settings
               </TabsTrigger>
@@ -396,7 +392,7 @@ const ProfilePage = () => {
 
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
                       Profile Information
                     </h2>
                     <Button
@@ -405,7 +401,7 @@ const ProfilePage = () => {
                       className="flex items-center space-x-2"
                     >
                       <UserCog className="h-4 w-4" />
-                      <span>{isEditing ? 'Cancel' : 'Edit Profile'}</span>
+                      <span>{isEditing ? 'Cancel' : 'Edit'}</span>
                     </Button>
                   </div>
                 </CardHeader>
@@ -418,7 +414,7 @@ const ProfilePage = () => {
                       onSubmit={handleSubmit}
                       className="space-y-6"
                     >
-                      <div className="grid gap-6 md:grid-cols-2">
+                      <div className="grid gap-6 sm:grid-cols-2">
                         <div className="space-y-2">
                           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Name
@@ -498,7 +494,7 @@ const ProfilePage = () => {
                     </motion.form>
                   ) : (
                     <div className="space-y-6">
-                      <div className="grid gap-6 md:grid-cols-2">
+                      <div className="grid gap-6 sm:grid-cols-2">
                         <div>
                           <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Name
@@ -526,8 +522,8 @@ const ProfilePage = () => {
               <Card>
                 <CardHeader>
                   <div className="flex items-center space-x-2">
-                    <Package className="h-6 w-6 text-primary" />
-                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                    <Package className="h-5 w-5 text-primary" />
+                    <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
                       Order History
                     </h2>
                   </div>
@@ -535,19 +531,19 @@ const ProfilePage = () => {
                 <CardContent>
                   {isMyOrdersLoading ? (
                     <div className="space-y-4">
-                      {[...Array(7)].map((_, i) => (
+                      {[...Array(5)].map((_, i) => (
                         <div key={i} className="flex items-center space-x-4">
-                          <Skeleton className="h-12 w-12 rounded-full" />
+                          <Skeleton className="h-10 w-10 rounded-full" />
                           <div className="space-y-2">
-                            <Skeleton className="h-4 w-[250px]" />
                             <Skeleton className="h-4 w-[200px]" />
+                            <Skeleton className="h-4 w-[150px]" />
                           </div>
                         </div>
                       ))}
                     </div>
                   ) : (
                     <>
-                      <div className="overflow-y-auto max-h-[500px]">
+                      <div className="overflow-x-auto">
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -578,7 +574,7 @@ const ProfilePage = () => {
                                 className="hover:bg-gray-50 dark:hover:bg-gray-800"
                               >
                                 <TableCell className="font-medium text-primary">
-                                  {order._id}
+                                  {order._id.slice(-6)}
                                 </TableCell>
                                 <TableCell className="text-gray-600 dark:text-gray-300">
                                   {new Date(
@@ -623,4 +619,5 @@ const ProfilePage = () => {
     </div>
   );
 };
+
 export default ProfilePage;

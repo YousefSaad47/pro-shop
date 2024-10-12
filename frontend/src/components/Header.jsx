@@ -181,19 +181,43 @@ const Header = () => {
     </DropdownMenu>
   );
 
-  const MobileMenuItem = ({ to, icon: Icon, label, onClick }) => (
+  const MobileMenuItem = ({
+    to,
+    icon: Icon,
+    label,
+    onClick,
+    isLogout = false,
+  }) => (
     <SheetClose asChild>
       <Link
         to={to}
         onClick={onClick}
-        className="select-none group w-full px-4 py-2 text-cyan-500 transition-all duration-300 flex items-center space-x-2 relative overflow-hidden hover:text-cyan-400"
+        className={`select-none group w-full px-4 py-2 transition-all duration-300 flex items-center space-x-2 relative overflow-hidden ${
+          isLogout
+            ? 'text-red-500 hover:text-red-400'
+            : 'text-cyan-500 hover:text-cyan-400'
+        }`}
       >
         <div className="relative z-10 flex items-center space-x-2">
-          <Icon className="h-4 w-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+          <Icon
+            className={`h-4 w-4 transition-all duration-300 ${
+              isLogout ? 'group-hover:-translate-x-1' : ''
+            } group-hover:rotate-12 group-hover:scale-110`}
+          />
           <span>{label}</span>
         </div>
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-        <div className="absolute inset-0 bg-cyan-900/5 scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 blur-sm"></div>
+        <div
+          className={`absolute inset-0 bg-gradient-to-r ${
+            isLogout
+              ? 'from-red-500/0 via-red-500/10 to-red-500/0'
+              : 'from-cyan-500/0 via-cyan-500/10 to-cyan-500/0'
+          } -translate-x-full group-hover:translate-x-0 transition-transform duration-500`}
+        ></div>
+        <div
+          className={`absolute inset-0 ${
+            isLogout ? 'bg-red-900/5' : 'bg-cyan-900/5'
+          } scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 blur-sm`}
+        ></div>
       </Link>
     </SheetClose>
   );
@@ -220,7 +244,7 @@ const Header = () => {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
-          <ThemeToggle /> {/* ThemeToggle added here in the header */}
+          <ThemeToggle />
           <NavLink
             to="/cart"
             icon={ShoppingCart}
@@ -259,6 +283,9 @@ const Header = () => {
             </SheetClose>
 
             <nav className="flex flex-col space-y-4 mt-8 px-6">
+              <div className="flex justify-end mb-4">
+                <ThemeToggle />
+              </div>
               <MobileMenuItem
                 to="/cart"
                 icon={ShoppingCart}
@@ -291,6 +318,7 @@ const Header = () => {
                     icon={LogOut}
                     label="Logout"
                     onClick={handleLogout}
+                    isLogout={true}
                   />
                 </>
               ) : (
