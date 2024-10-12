@@ -156,16 +156,16 @@ const SuccessOverlay = ({ onComplete }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="absolute inset-0 bg-green-50/50 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center"
+      className="absolute inset-0 bg-green-50/50 dark:bg-green-900/50 backdrop-blur-sm rounded-lg z-10 flex items-center justify-center"
     >
       <motion.div
-        className="bg-white p-6 rounded-xl shadow-xl flex items-center space-x-3"
+        className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-xl flex items-center space-x-3"
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2 }}
       >
         <CheckCircle2 className="h-6 w-6 text-green-500" />
-        <span className="font-medium text-gray-700">
+        <span className="font-medium text-gray-700 dark:text-gray-200">
           Profile updated successfully!
         </span>
       </motion.div>
@@ -285,20 +285,20 @@ const ProfilePage = () => {
   const getStatusBadge = (isPaid, isDelivered) => {
     if (isDelivered) {
       return (
-        <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs font-medium">
+        <span className="px-2 py-1 bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100 rounded-full text-xs font-medium">
           Delivered
         </span>
       );
     }
     if (isPaid) {
       return (
-        <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+        <span className="px-2 py-1 bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100 rounded-full text-xs font-medium">
           Paid
         </span>
       );
     }
     return (
-      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-medium">
+      <span className="px-2 py-1 bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100 rounded-full text-xs font-medium">
         Pending
       </span>
     );
@@ -344,7 +344,7 @@ const ProfilePage = () => {
                   )}
                 </div>
                 <div className="text-center space-y-1.5">
-                  <h2 className="text-xl font-semibold text-gray-800 flex items-center justify-center gap-2">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 flex items-center justify-center gap-2">
                     {name}
                     {userInfo?.isAdmin && (
                       <span className="text-sm text-primary">
@@ -352,12 +352,14 @@ const ProfilePage = () => {
                       </span>
                     )}
                   </h2>
-                  <p className="text-gray-500 text-sm">{email}</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">
+                    {email}
+                  </p>
                 </div>
-                <div className="w-full pt-4 border-t border-gray-100">
+                <div className="w-full pt-4 border-t border-gray-100 dark:border-gray-700">
                   <Button
                     variant="ghost"
-                    className="w-full flex items-center justify-center gap-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100/80 transition-colors duration-200"
+                    className="w-full flex items-center justify-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 transition-colors duration-200"
                     onClick={handleLogout}
                   >
                     <LogOut className="h-4 w-4" />
@@ -394,7 +396,7 @@ const ProfilePage = () => {
 
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <h2 className="text-2xl font-semibold text-gray-800">
+                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                       Profile Information
                     </h2>
                     <Button
@@ -407,7 +409,6 @@ const ProfilePage = () => {
                     </Button>
                   </div>
                 </CardHeader>
-
                 <CardContent>
                   {isEditing ? (
                     <motion.form
@@ -419,11 +420,11 @@ const ProfilePage = () => {
                     >
                       <div className="grid gap-6 md:grid-cols-2">
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Name
                           </label>
                           <div className="relative">
-                            <User className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <User className="absolute left-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
                             <Input
                               type="text"
                               value={name}
@@ -435,11 +436,11 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Email
                           </label>
                           <div className="relative">
-                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
                             <Input
                               type="email"
                               value={email}
@@ -451,11 +452,11 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             New Password
                           </label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
                             <Input
                               type="password"
                               value={password}
@@ -467,11 +468,11 @@ const ProfilePage = () => {
                         </div>
 
                         <div className="space-y-2">
-                          <label className="text-sm font-medium text-gray-700">
+                          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
                             Confirm Password
                           </label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+                            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400 dark:text-gray-500" />
                             <Input
                               type="password"
                               value={confirmPassword}
@@ -499,18 +500,18 @@ const ProfilePage = () => {
                     <div className="space-y-6">
                       <div className="grid gap-6 md:grid-cols-2">
                         <div>
-                          <label className="text-sm font-medium text-gray-500">
+                          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Name
                           </label>
-                          <p className="mt-1 text-lg font-medium text-gray-800">
+                          <p className="mt-1 text-lg font-medium text-gray-800 dark:text-gray-200">
                             {name}
                           </p>
                         </div>
                         <div>
-                          <label className="text-sm font-medium text-gray-500">
+                          <label className="text-sm font-medium text-gray-500 dark:text-gray-400">
                             Email
                           </label>
-                          <p className="mt-1 text-lg font-medium text-gray-800">
+                          <p className="mt-1 text-lg font-medium text-gray-800 dark:text-gray-200">
                             {email}
                           </p>
                         </div>
@@ -526,7 +527,7 @@ const ProfilePage = () => {
                 <CardHeader>
                   <div className="flex items-center space-x-2">
                     <Package className="h-6 w-6 text-primary" />
-                    <h2 className="text-2xl font-semibold text-gray-800">
+                    <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
                       Order History
                     </h2>
                   </div>
@@ -550,22 +551,22 @@ const ProfilePage = () => {
                         <Table>
                           <TableHeader>
                             <TableRow>
-                              <TableHead className="text-gray-600">
+                              <TableHead className="text-gray-600 dark:text-gray-300">
                                 Order ID
                               </TableHead>
-                              <TableHead className="text-gray-600">
+                              <TableHead className="text-gray-600 dark:text-gray-300">
                                 <div className="flex items-center space-x-1">
                                   <Calendar className="h-4 w-4" />
                                   <span>Date</span>
                                 </div>
                               </TableHead>
-                              <TableHead className="text-gray-600">
+                              <TableHead className="text-gray-600 dark:text-gray-300">
                                 <div className="flex items-center space-x-1">
                                   <DollarSign className="h-4 w-4" />
                                   <span>Total</span>
                                 </div>
                               </TableHead>
-                              <TableHead className="text-gray-600">
+                              <TableHead className="text-gray-600 dark:text-gray-300">
                                 Status
                               </TableHead>
                             </TableRow>
@@ -574,17 +575,17 @@ const ProfilePage = () => {
                             {ordersData?.orders.map((order) => (
                               <TableRow
                                 key={order._id}
-                                className="hover:bg-gray-50"
+                                className="hover:bg-gray-50 dark:hover:bg-gray-800"
                               >
                                 <TableCell className="font-medium text-primary">
                                   {order._id}
                                 </TableCell>
-                                <TableCell className="text-gray-600">
+                                <TableCell className="text-gray-600 dark:text-gray-300">
                                   {new Date(
                                     order.createdAt
                                   ).toLocaleDateString()}
                                 </TableCell>
-                                <TableCell className="text-gray-600 font-medium">
+                                <TableCell className="text-gray-600 dark:text-gray-300 font-medium">
                                   ${order.totalPrice.toFixed(2)}
                                 </TableCell>
                                 <TableCell>
@@ -622,5 +623,4 @@ const ProfilePage = () => {
     </div>
   );
 };
-
 export default ProfilePage;

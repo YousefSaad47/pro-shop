@@ -177,7 +177,7 @@ const ProductListPage = () => {
         toast({
           title: 'Success',
           description: 'Product created successfully',
-          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
+          className: 'bg-gray-800 border border-cyan-600 text-cyan-300',
           duration: 3000,
         });
         const createProductSound = new Audio('/assets/sounds/success.mp3');
@@ -207,7 +207,7 @@ const ProductListPage = () => {
         toast({
           title: 'Success',
           description: 'Product deleted successfully',
-          className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
+          className: 'bg-gray-800 border border-cyan-600 text-cyan-300',
           duration: 3000,
         });
       },
@@ -321,7 +321,6 @@ const ProductListPage = () => {
         <AlertDialog
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}
-          className="bg-gray-200"
         >
           <AlertDialogTrigger asChild>
             <Button>Create Product</Button>
@@ -365,7 +364,10 @@ const ProductListPage = () => {
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <TableRow key={product._id} className="hover:bg-gray-50">
+              <TableRow
+                key={product._id}
+                className="hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
                 <TableCell className="font-medium">{product._id}</TableCell>
                 <TableCell>{product.name}</TableCell>
                 <TableCell>${product.price.toFixed(2)}</TableCell>
@@ -382,7 +384,7 @@ const ProductListPage = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-red-500"
+                      className="text-red-500 dark:text-red-400"
                       onClick={() => handleOpenDeleteConfirmation(product)}
                     >
                       {deleteProductLoading &&
@@ -410,7 +412,6 @@ const ProductListPage = () => {
         <AlertDialog
           open={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
-          className="bg-gray-200"
         >
           <AlertDialogContent>
             <AlertDialogHeader>

@@ -97,7 +97,6 @@ const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [priceRange, setPriceRange] = useState('0-Infinity');
-  const [tempSearchTerm, setTempSearchTerm] = useState('');
 
   const {
     data: productsData,
@@ -147,15 +146,16 @@ const HomePage = () => {
     setCurrentPage(newPage);
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    setSearchTerm(tempSearchTerm);
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   const FilterSection = ({ isMobile = false }) => (
     <div className={`${isMobile ? 'px-4' : 'pr-8'} space-y-6`}>
       <div>
-        <h3 className="text-lg font-semibold mb-3">Categories</h3>
+        <h3 className="text-lg font-semibold mb-3 text-foreground">
+          Categories
+        </h3>
         <div className="space-y-2">
           {categories.map((category) => (
             <button
@@ -163,8 +163,8 @@ const HomePage = () => {
               onClick={() => handleCategoryChange(category)}
               className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
                 selectedCategory === category
-                  ? 'bg-indigo-100 text-indigo-700'
-                  : 'hover:bg-gray-100'
+                  ? 'bg-primary/10 text-primary'
+                  : 'hover:bg-muted text-foreground hover:text-foreground'
               }`}
             >
               {category}
@@ -174,11 +174,12 @@ const HomePage = () => {
       </div>
 
       <div>
-        <h3 className="text-lg font-semibold mb-3">Price Range</h3>
+        <h3 className="text-lg font-semibold mb-3 text-foreground">
+          Price Range
+        </h3>
         <div className="space-y-2">
           {[
             { label: 'All Prices', value: '0-Infinity' },
-            { label: 'Below $25', value: '0-25' },
             { label: 'Below $100', value: '0-100' },
             { label: '$100 to $500', value: '100-500' },
             { label: '$500 to $1000', value: '500-1000' },
@@ -189,8 +190,8 @@ const HomePage = () => {
               onClick={() => handlePriceRangeChange(range.value)}
               className={`block w-full text-left px-3 py-2 rounded-md transition-colors ${
                 priceRange === range.value
-                  ? 'bg-indigo-100 text-indigo-700'
-                  : 'hover:bg-gray-100'
+                  ? 'bg-primary/10 text-primary'
+                  : 'hover:bg-muted text-foreground hover:text-foreground'
               }`}
             >
               {range.label}
@@ -207,25 +208,21 @@ const HomePage = () => {
       <FeaturedSection products={productsData?.featuredProducts} />
 
       <div className="mt-16" id="products-section">
-        <h2 className="text-3xl font-bold mb-8">Explore Our Collection</h2>
+        <h2 className="text-3xl font-bold mb-8 text-foreground">
+          Explore Our Collection
+        </h2>
 
         <div className="mb-6 flex items-center space-x-4">
-          <form onSubmit={handleSearchSubmit} className="relative flex-grow">
+          <div className="relative flex-grow">
             <Input
               type="text"
               placeholder="Search products..."
-              value={tempSearchTerm}
-              onChange={(e) => setTempSearchTerm(e.target.value)}
+              value={searchTerm}
+              onChange={handleSearchChange}
               className="w-full pr-10"
             />
-            <Button
-              type="submit"
-              variant="ghost"
-              className="absolute right-0 top-0 h-full"
-            >
-              <Search className="h-5 w-5" />
-            </Button>
-          </form>
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          </div>
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" className="md:hidden">
@@ -252,7 +249,7 @@ const HomePage = () => {
             ) : isError ? (
               <ErrorMessage />
             ) : productsData?.products?.length === 0 ? (
-              <div className="text-center text-gray-500 py-8">
+              <div className="text-center text-muted-foreground py-8">
                 No products found
               </div>
             ) : (

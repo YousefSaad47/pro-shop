@@ -28,12 +28,8 @@ const CheckoutSteps = ({ currentStep }) => {
       toast({
         title: 'Already Signed In',
         description: 'You are already logged into your account.',
-        duration: 5000,
-        style: {
-          backgroundColor: '#333',
-          color: '#fff',
-          border: '1px solid #444',
-        },
+        duration: 3000,
+        className: 'bg-gray-950 border border-cyan-950 text-cyan-500',
       });
     } else {
       navigate(step.route);

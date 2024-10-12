@@ -62,9 +62,9 @@ const Product = ({ product }) => {
   return (
     <Link
       to={`/products/${product._id}`}
-      className={`bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col h-full p-4 relative ${
+      className={`bg-background border-border dark:bg-gray-900 rounded-lg shadow-md overflow-hidden flex flex-col h-full p-4 relative ${
         isOutOfStock ? 'opacity-75' : ''
-      }`}
+      } transition-colors duration-200`}
     >
       <img
         src={`/assets${product.image}`}
@@ -74,14 +74,18 @@ const Product = ({ product }) => {
         }`}
       />
       <div className="flex flex-col flex-grow mt-2">
-        <h3 className="text-xl font-semibold mb-2 truncate">{product.name}</h3>
+        <h3 className="text-xl font-semibold mb-2 truncate text-foreground">
+          {product.name}
+        </h3>
         <div className="flex items-center mb-2 flex-grow-0">
           <Rating
             value={product.rating}
             text={`${product.numReviews} reviews`}
           />
         </div>
-        <p className="text-lg font-bold mt-auto">${product.price.toFixed(2)}</p>
+        <p className="text-lg font-bold mt-auto text-foreground">
+          ${product.price.toFixed(2)}
+        </p>
       </div>
       <Button
         ref={buttonRef}
@@ -91,8 +95,8 @@ const Product = ({ product }) => {
         }
         className={`absolute top-2 right-2 rounded-full transition-colors duration-300 ${
           isInCart && !isOutOfStock
-            ? 'bg-green-500 hover:bg-red-500'
-            : 'hover:bg-gray-300'
+            ? 'bg-green-500 hover:bg-red-500 text-white'
+            : 'hover:bg-gray-300 dark:hover:bg-gray-700'
         } ${animationClass}`}
         onClick={handleCartAction}
       >

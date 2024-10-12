@@ -86,7 +86,9 @@ const PlaceOrderPage = () => {
       transition={{ duration: 0.5 }}
     >
       <CheckoutSteps currentStep={4} />
-      <h1 className="text-3xl font-bold text-center mb-8">Place Order</h1>
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+        Place Order
+      </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <motion.div
           className="lg:col-span-2 space-y-6"
@@ -94,13 +96,13 @@ const PlaceOrderPage = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-gray-50">
-              <CardTitle className="flex items-center text-lg">
+          <Card className="overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <CardHeader className="bg-gray-50 dark:bg-gray-700">
+              <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
                 <Truck className="mr-2" size={20} /> Shipping Information
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4">
+            <CardContent className="pt-4 text-gray-700 dark:text-gray-300">
               <p>
                 {shippingAddress.address}, {shippingAddress.city}{' '}
                 {shippingAddress.postalCode}, {shippingAddress.country}
@@ -108,28 +110,30 @@ const PlaceOrderPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-gray-50">
-              <CardTitle className="flex items-center text-lg">
+          <Card className="overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <CardHeader className="bg-gray-50 dark:bg-gray-700">
+              <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
                 <CreditCard className="mr-2" size={20} /> Payment Method
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4">
+            <CardContent className="pt-4 text-gray-700 dark:text-gray-300">
               <p>{paymentMethod}</p>
             </CardContent>
           </Card>
 
-          <Card className="overflow-hidden">
-            <CardHeader className="bg-gray-50">
-              <CardTitle className="flex items-center text-lg">
+          <Card className="overflow-hidden bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <CardHeader className="bg-gray-50 dark:bg-gray-700">
+              <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
                 <Package className="mr-2" size={20} /> Order Items
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
               {cartItems.length === 0 ? (
-                <p>Your cart is empty</p>
+                <p className="text-gray-700 dark:text-gray-300">
+                  Your cart is empty
+                </p>
               ) : (
-                <ul className="divide-y divide-gray-200">
+                <ul className="divide-y divide-gray-200 dark:divide-gray-700">
                   {cartItems.map((item, index) => (
                     <motion.li
                       key={index}
@@ -147,16 +151,16 @@ const PlaceOrderPage = () => {
                         <div>
                           <Link
                             to={`/products/${item._id}`}
-                            className="text-blue-600 hover:underline font-medium"
+                            className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                           >
                             {item.name}
                           </Link>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
                             {item.qty} x ${item.price}
                           </p>
                         </div>
                       </div>
-                      <span className="font-medium">
+                      <span className="font-medium text-gray-900 dark:text-white">
                         ${(item.qty * item.price).toFixed(2)}
                       </span>
                     </motion.li>
@@ -172,14 +176,14 @@ const PlaceOrderPage = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <Card className="sticky top-4">
-            <CardHeader className="bg-gray-50">
-              <CardTitle className="flex items-center text-lg">
+          <Card className="sticky top-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+            <CardHeader className="bg-gray-50 dark:bg-gray-700">
+              <CardTitle className="flex items-center text-lg text-gray-900 dark:text-white">
                 <ShoppingCart className="mr-2" size={20} /> Order Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4">
-              <div className="space-y-3">
+              <div className="space-y-3 text-gray-700 dark:text-gray-300">
                 <div className="flex justify-between">
                   <span>Items</span>
                   <span>${itemsPrice}</span>
@@ -192,8 +196,8 @@ const PlaceOrderPage = () => {
                   <span>Tax</span>
                   <span>${taxPrice}</span>
                 </div>
-                <Separator />
-                <div className="flex justify-between font-bold text-lg">
+                <Separator className="bg-gray-200 dark:bg-gray-600" />
+                <div className="flex justify-between font-bold text-lg text-gray-900 dark:text-white">
                   <span>Total</span>
                   <span>${totalPrice}</span>
                 </div>

@@ -223,11 +223,14 @@ const OrderListPage = () => {
           </TableHeader>
           <TableBody>
             {ordersData.orders.map((order) => (
-              <TableRow key={order._id} className="hover:bg-gray-50">
+              <TableRow
+                key={order._id}
+                className="hover:bg-accent hover:text-accent-foreground transition-colors"
+              >
                 <TableCell className="font-medium">{order._id}</TableCell>
                 <TableCell>
                   {order.user?.name || (
-                    <span className="flex items-center text-gray-500">
+                    <span className="flex items-center text-gray-500 dark:text-gray-400">
                       <UserX className="h-4 w-4 mr-1" />
                       User unavailable
                     </span>
@@ -239,22 +242,22 @@ const OrderListPage = () => {
                 <TableCell>${order.totalPrice.toFixed(2)}</TableCell>
                 <TableCell>
                   {order.status === 'paid' ? (
-                    <CheckCircle className="text-green-500 h-5 w-5" />
+                    <CheckCircle className="text-green-500 dark:text-green-400 h-5 w-5" />
                   ) : (
-                    <XCircle className="text-red-500 h-5 w-5" />
+                    <XCircle className="text-red-500 dark:text-red-400 h-5 w-5" />
                   )}
                 </TableCell>
                 <TableCell>
                   {order.isDelivered ? (
-                    <CheckCircle className="text-green-500 h-5 w-5" />
+                    <CheckCircle className="text-green-500 dark:text-green-400 h-5 w-5" />
                   ) : (
-                    <XCircle className="text-red-500 h-5 w-5" />
+                    <XCircle className="text-red-500 dark:text-red-400 h-5 w-5" />
                   )}
                 </TableCell>
                 <TableCell>
                   <Link
                     to={`/orders/${order._id}`}
-                    className="text-blue-500 hover:underline"
+                    className="text-blue-500 dark:text-blue-400 hover:underline"
                   >
                     Details
                   </Link>

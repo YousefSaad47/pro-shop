@@ -60,7 +60,7 @@ const CartPage = () => {
   return (
     <div className="container mx-auto py-8 px-4">
       <motion.h1
-        className="text-3xl font-bold mb-6"
+        className="text-3xl font-bold mb-6 text-foreground"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -84,17 +84,19 @@ const CartPage = () => {
 
       <div className="flex flex-col lg:flex-row gap-6">
         <motion.div
-          className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300"
+          className="w-full lg:w-2/3 bg-card p-6 rounded-lg shadow-lg border border-border"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
           {cartItems.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-xl mb-4">Your cart is empty.</p>
+              <p className="text-xl mb-4 text-foreground">
+                Your cart is empty.
+              </p>
               <Link
                 to="/"
-                className="text-blue-600 hover:underline flex items-center justify-center"
+                className="text-primary hover:text-primary/90 underline flex items-center justify-center"
               >
                 <ArrowLeft className="mr-2" /> Continue Shopping
               </Link>
@@ -105,7 +107,7 @@ const CartPage = () => {
                 {cartItems.map((item) => (
                   <motion.div
                     key={item._id}
-                    className="flex flex-col sm:flex-row items-center gap-4 mb-6 pb-6 border-b border-gray-200 last:border-b-0"
+                    className="flex flex-col sm:flex-row items-center gap-4 mb-6 pb-6 border-b border-border last:border-b-0"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -100 }}
@@ -117,10 +119,10 @@ const CartPage = () => {
                       className="w-24 h-24 rounded-lg shadow-md object-cover"
                     />
                     <div className="flex-grow">
-                      <h3 className="text-xl font-semibold mb-2">
+                      <h3 className="text-xl font-semibold mb-2 text-foreground">
                         {item.name}
                       </h3>
-                      <p className="text-gray-600 mb-2">
+                      <p className="text-muted-foreground mb-2">
                         ${item.price.toFixed(2)}
                       </p>
                       <div className="flex items-center gap-2">
@@ -132,7 +134,9 @@ const CartPage = () => {
                         >
                           <Minus className="h-4 w-4" />
                         </Button>
-                        <span className="w-8 text-center">{item.qty}</span>
+                        <span className="w-8 text-center text-foreground">
+                          {item.qty}
+                        </span>
                         <Button
                           size="sm"
                           variant="outline"
@@ -145,7 +149,7 @@ const CartPage = () => {
                     </div>
                     <Button
                       variant="ghost"
-                      className="text-red-600 hover:text-red-700"
+                      className="text-destructive hover:text-destructive/90"
                       onClick={() => handleRemoveFromCart(item._id)}
                     >
                       <Trash2 className="h-5 w-5" />
@@ -165,28 +169,30 @@ const CartPage = () => {
         </motion.div>
 
         <motion.div
-          className="w-full lg:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 h-fit"
+          className="w-full lg:w-1/3 bg-card p-6 rounded-lg shadow-lg border border-border h-fit"
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h2 className="text-2xl font-semibold mb-4">Order Summary</h2>
+          <h2 className="text-2xl font-semibold mb-4 text-foreground">
+            Order Summary
+          </h2>
           <div className="space-y-2 mb-4">
-            <div className="flex justify-between">
+            <div className="flex justify-between text-foreground">
               <span>Subtotal ({totalItems} items)</span>
               <span>${subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-foreground">
               <span>Tax</span>
               <span>${tax.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between text-foreground">
               <span>Shipping</span>
               <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
             </div>
           </div>
-          <div className="border-t border-gray-300 pt-4 mb-6">
-            <div className="flex justify-between text-xl font-bold">
+          <div className="border-t border-border pt-4 mb-6">
+            <div className="flex justify-between text-xl font-bold text-foreground">
               <span>Total</span>
               <span>${total.toFixed(2)}</span>
             </div>

@@ -253,7 +253,10 @@ const UserListPage = () => {
           </TableHeader>
           <TableBody>
             {data.users.map((user) => (
-              <TableRow key={user._id} className="hover:bg-gray-50">
+              <TableRow
+                key={user._id}
+                className="hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              >
                 <TableCell className="font-medium">{user._id}</TableCell>
                 <TableCell>{user.name}</TableCell>
                 <TableCell>{user.email}</TableCell>
@@ -268,7 +271,7 @@ const UserListPage = () => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="text-red-500"
+                      className="text-red-500 hover:text-red-700 dark:hover:text-red-400"
                       onClick={() => handleOpenDeleteConfirmation(user)}
                     >
                       {deleteUserLoading && userToDelete?._id === user._id ? (
@@ -291,7 +294,6 @@ const UserListPage = () => {
         <AlertDialog
           open={isDeleteDialogOpen}
           onOpenChange={setIsDeleteDialogOpen}
-          className="bg-gray-200"
         >
           <AlertDialogContent>
             <AlertDialogHeader>

@@ -22,9 +22,7 @@ const ShippingPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     dispatch(saveShippingAddress({ address, city, postalCode, country }));
-
     navigate('/payment');
   };
 
@@ -36,12 +34,14 @@ const ShippingPage = () => {
     <FormContainer>
       <CheckoutSteps currentStep={2} />
       <motion.div
-        className="max-w-md mx-auto bg-white p-8 shadow-md rounded-lg border border-gray-200"
+        className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 shadow-md rounded-lg border border-gray-200 dark:border-gray-700"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-2xl font-bold text-center mb-6">Shipping</h1>
+        <h1 className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white">
+          Shipping
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <motion.div
             className="space-y-4"
@@ -50,7 +50,7 @@ const ShippingPage = () => {
             transition={{ duration: 0.3, delay: 0.1 }}
           >
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Address
               </label>
               <input
@@ -58,13 +58,13 @@ const ShippingPage = () => {
                 placeholder="Enter address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 City
               </label>
               <input
@@ -72,13 +72,13 @@ const ShippingPage = () => {
                 placeholder="Enter city"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Postal Code
               </label>
               <input
@@ -86,13 +86,13 @@ const ShippingPage = () => {
                 placeholder="Enter postal code"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Country
               </label>
               <input
@@ -100,16 +100,13 @@ const ShippingPage = () => {
                 placeholder="Enter country"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                 required
               />
             </div>
           </motion.div>
 
-          <Button
-            type="submit"
-            className="w-full py-2 px-4 text-white font-bold rounded-lg"
-          >
+          <Button type="submit" className="w-full">
             Continue to Payment
           </Button>
         </form>

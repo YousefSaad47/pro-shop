@@ -3,10 +3,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const LoadingSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {Array.from({ length: 12 }).map((_, index) => (
+    {Array.from({ length: 6 }).map((_, index) => (
       <div
         key={index}
-        className="bg-white border border-gray-200 rounded-lg shadow-md overflow-hidden flex flex-col h-full p-4 relative"
+        className="bg-card border border-border rounded-lg shadow-md overflow-hidden flex flex-col h-full p-4 relative"
       >
         <Skeleton className="w-full h-48 rounded-md" />
         <div className="flex flex-col flex-grow mt-2">

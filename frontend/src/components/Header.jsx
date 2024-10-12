@@ -7,7 +7,6 @@ import {
   LogOut,
   Zap,
   Cpu,
-  X,
 } from 'lucide-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
@@ -17,6 +16,7 @@ import axios from 'axios';
 import { logout } from '@/store';
 import logo from '../assets/images/logo.png';
 import { Button } from '@/components/ui/button';
+import ThemeToggle from './ThemeToggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -181,6 +181,23 @@ const Header = () => {
     </DropdownMenu>
   );
 
+  const MobileMenuItem = ({ to, icon: Icon, label, onClick }) => (
+    <SheetClose asChild>
+      <Link
+        to={to}
+        onClick={onClick}
+        className="select-none group w-full px-4 py-2 text-cyan-500 transition-all duration-300 flex items-center space-x-2 relative overflow-hidden hover:text-cyan-400"
+      >
+        <div className="relative z-10 flex items-center space-x-2">
+          <Icon className="h-4 w-4 transition-all duration-300 group-hover:rotate-12 group-hover:scale-110" />
+          <span>{label}</span>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+        <div className="absolute inset-0 bg-cyan-900/5 scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 blur-sm"></div>
+      </Link>
+    </SheetClose>
+  );
+
   return (
     <header className="select-none bg-gray-950 text-white fixed w-full top-0 z-50 px-20 sm:px-20 md:px-16 py-3 border-b border-cyan-950">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -203,6 +220,7 @@ const Header = () => {
         </Link>
 
         <nav className="hidden md:flex items-center space-x-6">
+          <ThemeToggle /> {/* ThemeToggle added here in the header */}
           <NavLink
             to="/cart"
             icon={ShoppingCart}
@@ -236,68 +254,47 @@ const Header = () => {
           >
             <SheetClose asChild>
               <button className="absolute right-4 top-4 group p-2 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 transition-all duration-300">
-                <X className="h-4 w-4 text-cyan-500 transition-all duration-300 group-hover:rotate-90 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-cyan-500/5 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </button>
             </SheetClose>
 
             <nav className="flex flex-col space-y-4 mt-8 px-6">
-              <SheetClose asChild>
-                <NavLink
-                  to="/cart"
-                  icon={ShoppingCart}
-                  label="Cart"
-                  showCartCount
-                />
-              </SheetClose>
+              <MobileMenuItem
+                to="/cart"
+                icon={ShoppingCart}
+                label={`Cart (${cartCount})`}
+              />
               {userInfo ? (
                 <>
-                  <SheetClose asChild>
-                    <NavLink to="/profile" icon={User} label="Profile" />
-                  </SheetClose>
+                  <MobileMenuItem to="/profile" icon={User} label="Profile" />
                   {userInfo.isAdmin && (
                     <>
-                      <SheetClose asChild>
-                        <NavLink
-                          to="/admin/productlist"
-                          icon={Zap}
-                          label="Products"
-                        />
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <NavLink
-                          to="/admin/userlist"
-                          icon={User}
-                          label="Users"
-                        />
-                      </SheetClose>
-                      <SheetClose asChild>
-                        <NavLink
-                          to="/admin/orderlist"
-                          icon={ShoppingCart}
-                          label="Orders"
-                        />
-                      </SheetClose>
+                      <MobileMenuItem
+                        to="/admin/productlist"
+                        icon={Zap}
+                        label="Products"
+                      />
+                      <MobileMenuItem
+                        to="/admin/userlist"
+                        icon={User}
+                        label="Users"
+                      />
+                      <MobileMenuItem
+                        to="/admin/orderlist"
+                        icon={ShoppingCart}
+                        label="Orders"
+                      />
                     </>
                   )}
-                  <SheetClose asChild>
-                    <button
-                      onClick={handleLogout}
-                      className="select-none group w-full px-4 py-2 text-red-500 transition-all duration-300 flex items-center space-x-2 relative overflow-hidden rounded-lg hover:text-red-400"
-                    >
-                      <div className="relative z-10 flex items-center space-x-2">
-                        <LogOut className="h-4 w-4 transition-all duration-300 group-hover:-translate-x-1 group-hover:rotate-12" />
-                        <span>Logout</span>
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-r from-red-500/0 via-red-500/10 to-red-500/0 -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                      <div className="absolute inset-0 bg-red-900/5 scale-95 opacity-0 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 blur-sm"></div>
-                    </button>
-                  </SheetClose>
+                  <MobileMenuItem
+                    to="/login"
+                    icon={LogOut}
+                    label="Logout"
+                    onClick={handleLogout}
+                  />
                 </>
               ) : (
-                <SheetClose asChild>
-                  <NavLink to="/login" icon={User} label="Sign In" />
-                </SheetClose>
+                <MobileMenuItem to="/login" icon={User} label="Sign In" />
               )}
             </nav>
           </SheetContent>

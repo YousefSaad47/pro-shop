@@ -15,7 +15,7 @@ const FeaturedSection = ({ products }) => {
 
   return (
     <section className="mb-32">
-      <h2 className="text-5xl font-bold mb-12 flex items-center justify-center text-gray-800">
+      <h2 className="text-5xl font-bold mb-12 flex items-center justify-center text-gray-800 dark:text-gray-200">
         <Star className="mr-4 text-yellow-500 w-12 h-12" /> Featured Products
       </h2>
       <Carousel className="rounded-xl overflow-hidden shadow-2xl">

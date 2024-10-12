@@ -78,13 +78,13 @@ const LoginPage = () => {
   return (
     <FormContainer>
       <motion.div
-        className="max-w-md mx-auto bg-white p-8 shadow-md rounded-lg border border-gray-200"
+        className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 shadow-md rounded-lg border border-gray-200 dark:border-gray-700"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.h1
-          className="text-2xl font-bold text-center mb-6"
+          className="text-2xl font-bold text-center mb-6 text-gray-900 dark:text-white"
           variants={itemVariants}
         >
           Sign in
@@ -93,7 +93,7 @@ const LoginPage = () => {
           <motion.div variants={itemVariants}>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Email address
             </label>
@@ -102,14 +102,14 @@ const LoginPage = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               required
             />
           </motion.div>
           <motion.div variants={itemVariants}>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               Password
             </label>
@@ -118,7 +118,7 @@ const LoginPage = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="mt-1 block w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
               required
             />
           </motion.div>
@@ -126,7 +126,7 @@ const LoginPage = () => {
             <Button
               disabled={isLoading}
               type="submit"
-              className="w-full py-2 px-4 text-white font-bold rounded-lg"
+              className="w-full py-2 px-4 font-bold rounded-lg"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -134,13 +134,13 @@ const LoginPage = () => {
             </Button>
           </motion.div>
           <motion.div
-            className="text-center text-sm mt-4"
+            className="text-center text-sm mt-4 text-gray-600 dark:text-gray-400"
             variants={itemVariants}
           >
             Don't have an account?{' '}
             <Link
               to={redirect ? `/register?redirect=${redirect}` : '/register'}
-              className="text-indigo-600 hover:underline"
+              className="text-indigo-600 hover:underline dark:text-indigo-400"
             >
               Sign up here
             </Link>
