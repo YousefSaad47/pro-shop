@@ -13,9 +13,11 @@ import paymentRoutes from './routes/paymentRoute.js';
 dotenv.config();
 connectDB();
 
-const port = process.env.PORT || 8080;
-
 const app = express();
+
+app.get('/test', (req, res) => {
+  res.json({ message: 'Server is running' });
+});
 
 app.use('/api', paymentRoutes);
 
@@ -48,4 +50,4 @@ if (process.env.NODE_ENV === 'production') {
 
 app.use(notFound);
 
-app.listen(port, () => console.log(`Server running on port ${port}`));
+export { app };

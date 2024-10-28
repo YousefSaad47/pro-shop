@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "ecommerce platform",
   "type": "module",
-  "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "server": "nodemon server.js",
     "data:import": "node seeder.js -i",
-    "data:destroy": "node seeder.js -d"
+    "data:destroy": "node seeder.js -d",
+    "build": "cd .. && pnpm install --prefix backend && pnpm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",
