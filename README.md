@@ -56,7 +56,7 @@ https://github.com/user-attachments/assets/efd06cd6-3185-49d8-964c-202b9826810a
 ## Usage
 
 - Create a MongoDB database and obtain your `MongoDB URI` - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register)
-- Create a Stripe account and obtain your `Secret Key` - [Stripe Developer](https://stripe.com/)
+- Create a Stripe account and obtain your `Secret Key, Publishable Key, Web Hook Secret` - [Stripe Developer](https://stripe.com/)
 
 ### Env Variables
 
@@ -102,6 +102,8 @@ npm run dev
 You can use the following commands to seed the database with some sample users and products as well as destroy all data
 
 ```
+# in the backend
+cd backend/
 # Import data
 npm run data:import
 # Destroy data
