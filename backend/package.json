@@ -4,11 +4,11 @@
   "description": "ecommerce platform",
   "type": "module",
   "scripts": {
-    "start": "node .",
-    "server": "nodemon .",
+    "start": "node index.js",
+    "server": "nodemon index.js",
     "data:import": "node seeder.js -i",
     "data:destroy": "node seeder.js -d",
-    "build": "NODE_ENV=production cd .. && npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
+    "build": "cd .. && npm install --prefix backend && npm install --prefix frontend && npm run build --prefix frontend"
   },
   "keywords": [],
   "author": "",

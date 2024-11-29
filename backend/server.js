@@ -15,10 +15,6 @@ connectDB();
 
 const app = express();
 
-app.get('/test', (req, res) => {
-  res.json({ message: 'Server is running' });
-});
-
 app.use('/api', paymentRoutes);
 
 const __dirname = path.resolve();
@@ -48,6 +44,10 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
+app.get('/', (req, res) => {
+  res.json({ message: 'Server is running' });
+});
+
 app.use(notFound);
 
-export { app };
+export default app;
